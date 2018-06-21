@@ -35,7 +35,13 @@ public class RootController extends BorderPane {
 		if(t == null)
 			return;
 		
-		switch(t.getText()) {
+		switch(t.getText().toLowerCase()) {
+		case "dashboard":
+			t.setContent(new DashboardTabController());
+			break;
+		case "consultant":
+			t.setContent(new ConsultantTabController());
+			break;
 		}
 	}
 }
