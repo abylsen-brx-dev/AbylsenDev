@@ -1,0 +1,15 @@
+package common;
+
+import javafx.scene.layout.BorderPane;
+
+public class RootController extends BorderPane {
+
+	public RootController() {
+		
+	}
+	
+	public static createInstance() {
+		
+		
+	}
+}

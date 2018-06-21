@@ -1,0 +1,31 @@
+package views;
+
+import java.io.IOException;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+
+public class RootController extends BorderPane {
+
+	@FXML
+	private TabPane mainTabPane;
+	
+	public RootController() {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/RootView.fxml"));
+		loader.setRoot(this);
+		loader.setController(this);
+
+		initMainTabPane(;)
+		try {
+			loader.load();
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+	
+	private void initMainTabPane() {
+		
+	}
+}

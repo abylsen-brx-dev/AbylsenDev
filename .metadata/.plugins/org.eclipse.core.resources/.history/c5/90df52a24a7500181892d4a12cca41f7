@@ -1,0 +1,18 @@
+package com.abylsen.application;
+
+import com.abylsen.views.RootController;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class MainApp extends Application {
+
+	private Stage primaryStage;
+	private RootController root;
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		
+
+	}
+}

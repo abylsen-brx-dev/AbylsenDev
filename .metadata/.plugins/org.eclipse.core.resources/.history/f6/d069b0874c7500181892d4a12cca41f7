@@ -1,0 +1,19 @@
+package common;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.BorderPane;
+
+public class RootController extends BorderPane {
+
+	public RootController() {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("custom_control.fxml"));
+		loader.setRoot(this);
+		loader.setController(this);
+
+		try {
+			loader.load();
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+}
