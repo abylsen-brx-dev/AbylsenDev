@@ -22,4 +22,52 @@ public class Person extends BaseModel {
 		this.lastName = new SimpleStringProperty(lastName);
 		this.birthDate = new SimpleObjectProperty<LocalDate>(birthDate);
 	}
+	
+	public String getFirstName() {
+		if(firstName == null)
+			return "";
+		
+		return firstName.get();
+	}
+	
+	public void setFirstName(String value) {
+		if(firstName != null)
+			firstName.set(value);
+	}
+	
+	public StringProperty firstNameProperty() {
+		return firstName;
+	}
+	
+	public String getLastName() {
+		if(lastName == null)
+			return "";
+		
+		return lastName.get();
+	}
+	
+	public void setLastName(String value) {
+		if(lastName != null)
+			lastName.set(value);
+	}
+	
+	public StringProperty lastNameProperty() {
+		return lastName;
+	}
+	
+	public LocalDate getBirhtDate() {
+		if(birthDate == null)
+			return null;
+		
+		return birthDate.get();
+	}
+	
+	public void setBirthDate(LocalDate value) {
+		if(birthDate != null)
+			birthDate.set(value);
+	}
+	
+	public ObjectProperty<LocalDate> birthDateProperty() {
+		return birthDate;
+	}
 }
