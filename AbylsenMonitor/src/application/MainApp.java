@@ -14,10 +14,11 @@ public class MainApp extends Application {
 		try {
 			root = new RootController();
 			
-			Scene scene = new Scene(root, 1000, 800);
+			Scene scene = new Scene(root);
 			
 			primaryStage.setTitle("Abyslen monitor");
 			primaryStage.setScene(scene);
+			primaryStage.setMaximized(true);
 			primaryStage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
