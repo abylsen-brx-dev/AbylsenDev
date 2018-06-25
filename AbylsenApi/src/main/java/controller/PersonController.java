@@ -1,6 +1,6 @@
 package controller;
 
-import java.util.Hashtable;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,15 +13,13 @@ import service.PersonService;
 @RequestMapping("/persons")
 public class PersonController {
 	
-	private PersonService ps = new PersonService();
-	
 	@RequestMapping("/all")
-	public Hashtable<Integer,Person> getAll(){
-		return ps.getAll();
+	public List<Person> getAll(){
+		return PersonService.getInstance().getAll();
 	}
 
 	@RequestMapping("/{id}")
 	public Person getPerson(@PathVariable("id") int id) {
-		return ps.getPerson(id);
+		return PersonService.getInstance().getPerson(id);
 	}
 }

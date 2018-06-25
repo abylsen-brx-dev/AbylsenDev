@@ -1,40 +1,72 @@
 package service;
 
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
+import Util.HibernateUtil;
 import model.Person;
 
 @Service
 public class PersonService {
-	
-	private Hashtable<Integer,Person> persons = new Hashtable<Integer,Person>();
-	
-	public PersonService() {
-		Person p = new Person();
-		//p.setId(1);
-		p.setFirstName("arnaud");
-		p.setLastName("schaal");
-		
-		persons.put(1, p);
-		
-		Person p2 = new Person();
-		//p2.setId(2);
-		p2.setFirstName("charline");
-		p2.setLastName("liegeois");
 
-		persons.put(2, p2);
+	private static PersonService instance;
+
+	public static PersonService getInstance() {
+		if (instance == null)
+			instance = new PersonService();
+
+		return instance;
 	}
-	
+
+	private PersonService() {
+
+	}
+
 	public Person getPerson(int id) {
-		if(persons.containsKey(id))
-			return persons.get(id);
-		else
+		try {
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			return session.get(Person.class, new Integer(id));
+			
+		} catch (Exception e) {
+			System.out.println("[PersonService.addPerson] Error while insert person : " + e);
 			return null;
+		}
 	}
-	
-	public Hashtable<Integer,Person> getAll(){
-		return persons;
+
+	@SuppressWarnings({ "deprecation", "unchecked" })
+	public List<Person> getAll() {
+		try {
+			List<Person> list = new ArrayList<Person>();
+			Session session = HibernateUtil.getSessionFactory().openSession();
+
+			list = session.createCriteria(Person.class).list();
+			return list;
+		} catch (Exception e) {
+			System.out.println("[PersonService.addPerson] Error while insert person : " + e);
+			return new ArrayList<Person>();
+		}
+	}
+
+	public boolean addPerson(Person p) {
+		try {
+			Session session = HibernateUtil.getSessionFactory().openSession();
+
+			Transaction tx = session.beginTransaction();
+
+			Integer id = (Integer) session.save(p);
+			System.out.println("Clé primaire : " + id);
+
+			tx.commit();
+			session.close();
+
+			return true;
+		} catch (Exception ex) {
+			System.out.println("[PersonService.addPerson] Error while insert person : " + ex);
+			return false;
+		}
 	}
 }

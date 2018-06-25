@@ -18,7 +18,7 @@ public class AbylsenApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AbylsenApiApplication.class, args);
 	
-		//initHibernate();
+		initHibernate();
 	}
 	
 	private static void initHibernate() {
@@ -30,7 +30,7 @@ public class AbylsenApiApplication {
 		p.setFirstName("arnaud");
 		p.setLastName("schaal");
 		
-		Long id = (Long) session.save(p);
+		Integer id = (Integer) session.save(p);
 		System.out.println("Clé primaire : " + id);
 		
 		tx.commit();
