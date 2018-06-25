@@ -16,12 +16,12 @@ public class PersonController {
 	private PersonService ps = new PersonService();
 	
 	@RequestMapping("/all")
-	public Hashtable<String,Person> getAll(){
+	public Hashtable<Integer,Person> getAll(){
 		return ps.getAll();
 	}
 
 	@RequestMapping("/{id}")
-	public Person getPerson(@PathVariable("id") String id) {
+	public Person getPerson(@PathVariable("id") int id) {
 		return ps.getPerson(id);
 	}
 }
