@@ -25,7 +25,7 @@ public class PersonController {
 		return PersonService.getInstance().getPerson(id);
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public boolean update(@RequestBody Person p) {
 	    if(p == null)
 	    	return false;
