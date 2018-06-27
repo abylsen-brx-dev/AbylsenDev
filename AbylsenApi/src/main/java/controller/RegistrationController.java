@@ -1,11 +1,12 @@
 package controller;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +32,7 @@ public class RegistrationController {
 
 	@RequestHandlerContract
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public BaseResponse create(@RequestBody CreateAccountRequest request, BindingResult bindingResult,HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
+	public BaseResponse create(@RequestBody CreateAccountRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction t = null;
 		
@@ -78,7 +79,7 @@ public class RegistrationController {
 
 	@RequestHandlerContract
 	@RequestMapping("/register")
-	public BaseResponse register(@RequestBody RegistrationRequest request, BindingResult bindingResult,HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
+	public BaseResponse register(@RequestBody RegistrationRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction t = null;
 		try {
@@ -116,5 +117,28 @@ public class RegistrationController {
 			session.close();
 			return response;
 		}
+	}
+	
+	@RequestHandlerContract(needRegistration = true)
+	@RequestMapping("/keepalive")
+	public BaseResponse keepAlive(HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt) {
+		BaseResponse response = new BaseResponse();
+		
+		response.code = HttpStatus.STATUS_OK;
+		response.status = "Done";
+		
+		try {
+			httpResponse.addHeader(
+					HttpHeaders.HEADER_TOKEN,
+					SecurityUtil.generateToken(
+							cxt.getUser().getEmail(), 
+							cxt.getUser().getPassword(), 
+							cxt.getClientInformation().getSecretKey()));
+		} catch (UnsupportedEncodingException e) {
+			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+			response.status = "Error, try again later";
+		}
+		
+		return response;
 	}
 }
