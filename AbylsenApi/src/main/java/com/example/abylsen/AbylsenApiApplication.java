@@ -7,9 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-import Interceptor.LogInterceptor;
-import Interceptor.RegistrationInterceptor;
-import Interceptor.SecurityInterceptor;
+import initialization.InitializationEngine;
+import interceptor.LogInterceptor;
+import interceptor.RegistrationInterceptor;
+import interceptor.SecurityInterceptor;
 
 @Configuration
 @EnableAutoConfiguration
@@ -21,6 +22,11 @@ public class AbylsenApiApplication extends WebMvcConfigurationSupport {
 	private LogInterceptor logInterceptor = new LogInterceptor();
 	
 	public static void main(String[] args) {
+		
+		//First we init the DB.
+		InitializationEngine ie = new InitializationEngine();
+		ie.start();
+		
 		SpringApplication.run(AbylsenApiApplication.class, args);
 	}
 

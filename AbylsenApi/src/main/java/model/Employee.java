@@ -5,12 +5,10 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import Dto.EmployeeDto;
 import Dto.PersonDto;
-import Util.HibernateUtil;
 
 public class Employee extends Person {
 	
@@ -43,37 +41,31 @@ public class Employee extends Person {
 		super.fromDto(e);
 	}
 	
-	public static Employee getEmployee(int id) {
+	public static Employee getEmployee(Session session, int id) {
 		try {
-			Session session = HibernateUtil.getSessionFactory().openSession();
 			return session.get(Employee.class, new Integer(id));
-			
 		} catch (Exception e) {
 			System.out.println("[Employee.getEmployee] Error while looking for employee : " + e);
 			return null;
 		}
 	}
 	
-	public static Employee getEmployeeByEmail(String email) {
+	public static Employee getEmployeeByEmail(Session session, String email) {
 		try {
-			Session session = HibernateUtil.getSessionFactory().openSession();
 			@SuppressWarnings("deprecation")
 			Criteria criteria = session.createCriteria(Employee.class);
 			return (Employee) criteria.add(Restrictions.eq("email", email))
 			                             .uniqueResult();
-			
 		} catch (Exception e) {
 			System.out.println("[Employee.getEmployee] Error while looking for employee : " + e);
 			throw(e);
 		}
 	}
 
-	@SuppressWarnings({ "deprecation", "unchecked" })
-	public static List<Employee> getAllEmployee() {
+	@SuppressWarnings({ "unchecked", "deprecation" })
+	public static List<Employee> getAllEmployee(Session session) {
 		try {
 			List<Employee> list = new ArrayList<Employee>();
-			Session session = HibernateUtil.getSessionFactory().openSession();
-
 			list = session.createCriteria(Person.class).list();
 			return list;
 		} catch (Exception e) {
@@ -82,16 +74,9 @@ public class Employee extends Person {
 		}
 	}
 
-	public static boolean addEmployee(Employee p) {
+	public static boolean addEmployee(Session session, Employee p) {
 		try {
-			Session session = HibernateUtil.getSessionFactory().openSession();
-
-			Transaction tx = session.beginTransaction();
 			session.save(p);
-			
-			tx.commit();
-			session.close();
-
 			return true;
 		} catch (Exception ex) {
 			System.out.println("[PersonService.addPerson] Error while insert employee : " + ex);

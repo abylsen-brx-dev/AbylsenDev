@@ -1,4 +1,4 @@
-package Util;
+package util;
 
 public class SecurityUtil {
 	public static boolean isTokenValid(String value) {

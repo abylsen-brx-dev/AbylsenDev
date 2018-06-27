@@ -1,10 +1,12 @@
 package service;
 
-import Util.SecurityUtil;
+import org.hibernate.Session;
+
 import enums.HttpStatus;
 import model.CreateAccountResponse;
 import model.Employee;
 import model.RegistrationResponse;
+import util.SecurityUtil;
 
 public class RegistrationService extends BaseService{
 
@@ -21,7 +23,7 @@ public class RegistrationService extends BaseService{
 		
 	}
 	
-	public CreateAccountResponse createAccount(Employee e) {
+	public CreateAccountResponse createAccount(Session session, Employee e) {
 		CreateAccountResponse response = new CreateAccountResponse();
 		
 		if(e.getEmail() == null || e.getEmail() == "" ) {
@@ -30,7 +32,7 @@ public class RegistrationService extends BaseService{
 			return response;
 		}
 		
-		if(Employee.getEmployeeByEmail(e.getEmail()) != null) {
+		if(Employee.getEmployeeByEmail(session, e.getEmail()) != null) {
 			response.code = HttpStatus.STATUS_BAD_REQUEST;
 			response.status = "Email is already taken";
 			return response;
@@ -54,7 +56,7 @@ public class RegistrationService extends BaseService{
 			return response;
 		}
 		
-		if(!Employee.addEmployee(e)) {
+		if(!Employee.addEmployee(session, e)) {
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
 			response.status = "Internal error, try later";
 			return response;
@@ -66,7 +68,7 @@ public class RegistrationService extends BaseService{
 		return response;
 	}
 	
-	public RegistrationResponse register(String email, String password) {
+	public RegistrationResponse register(Session session, String email, String password) {
 		RegistrationResponse response = new RegistrationResponse();
 		
 		if(email == null || email == "") {
@@ -79,7 +81,7 @@ public class RegistrationService extends BaseService{
 			response.status = "password is empty";
 		}
 		
-		Employee e = Employee.getEmployeeByEmail(email);
+		Employee e = Employee.getEmployeeByEmail(session, email);
 		if(e == null) {
 			response.code = HttpStatus.STATUS_BAD_REQUEST;
 			response.status = "No account found with this email";

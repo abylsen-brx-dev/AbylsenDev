@@ -1,4 +1,4 @@
-package Interceptor;
+package interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,11 +7,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import Util.AnnotationUtil;
-import Util.SecurityUtil;
 import annotation.RequestHandlerContract;
 import enums.HttpHeaders;
 import enums.HttpStatus;
+import util.AnnotationUtil;
+import util.SecurityUtil;
 
 public class RegistrationInterceptor implements HandlerInterceptor {
 
