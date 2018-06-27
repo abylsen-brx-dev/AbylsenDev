@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+"http://www.hibernate.org/dtd/hibernate-configuration">
 
 <hibernate-configuration>
 
@@ -15,9 +15,9 @@
 		<property name="connection.pool_size">1</property>
 	
 		<!-- 	SQL Dialect -->
-		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
 		
-		<property name="hibernate.hbm2ddl.auto" >update</property>		
+		<property name="hibernate.hbm2ddl.auto">update</property>		
 		<property name="show_sql">true</property>
 	
 		<mapping resource="model/Person.hbm.xml"/>
