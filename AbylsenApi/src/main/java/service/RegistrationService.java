@@ -3,9 +3,8 @@ package service;
 import org.hibernate.Session;
 
 import enums.HttpStatus;
-import model.CreateAccountResponse;
+import model.BaseResponse;
 import model.Employee;
-import model.RegistrationResponse;
 import util.SecurityUtil;
 
 public class RegistrationService extends BaseService{
@@ -23,8 +22,8 @@ public class RegistrationService extends BaseService{
 		
 	}
 	
-	public CreateAccountResponse createAccount(Session session, Employee e) {
-		CreateAccountResponse response = new CreateAccountResponse();
+	public BaseResponse createAccount(Session session, Employee e) {
+		BaseResponse response = new BaseResponse();
 		
 		if(e.getEmail() == null || e.getEmail() == "" ) {
 			response.code = HttpStatus.STATUS_BAD_REQUEST;
@@ -64,12 +63,11 @@ public class RegistrationService extends BaseService{
 		
 		response.code = HttpStatus.STATUS_OK;
 		response.status = "creation done";
-		response.token = SecurityUtil.generateToken(e.getEmail(), e.getPassword());
 		return response;
 	}
 	
-	public RegistrationResponse register(Session session, String email, String password) {
-		RegistrationResponse response = new RegistrationResponse();
+	public BaseResponse register(Session session, String email, String password) {
+		BaseResponse response = new BaseResponse();
 		
 		if(email == null || email == "") {
 			response.code = HttpStatus.STATUS_BAD_REQUEST;
@@ -96,7 +94,6 @@ public class RegistrationService extends BaseService{
 
 		response.code = HttpStatus.STATUS_OK;
 		response.status = "registration done";
-		response.token = SecurityUtil.generateToken(e.getEmail(), e.getPassword());
 		
 		return response;
 	}

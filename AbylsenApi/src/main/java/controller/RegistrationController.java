@@ -1,14 +1,21 @@
 package controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import ArgumentResolver.HttpContext;
 import annotation.RequestHandlerContract;
+import enums.HttpHeaders;
 import enums.HttpStatus;
+import model.BaseResponse;
 import model.CreateAccountRequest;
 import model.CreateAccountResponse;
 import model.Employee;
@@ -16,6 +23,7 @@ import model.RegistrationRequest;
 import model.RegistrationResponse;
 import service.RegistrationService;
 import util.HibernateUtil;
+import util.SecurityUtil;
 
 @RestController
 @RequestMapping("/registration")
@@ -23,9 +31,10 @@ public class RegistrationController {
 
 	@RequestHandlerContract
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public CreateAccountResponse create(@RequestBody CreateAccountRequest request){
+	public BaseResponse create(@RequestBody CreateAccountRequest request, BindingResult bindingResult,HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction t = null;
+		
 		try {
 			if(request == null || request.account == null) {
 				CreateAccountResponse response = new CreateAccountResponse();
@@ -39,11 +48,17 @@ public class RegistrationController {
 			
 			t = session.beginTransaction();
 			
-			CreateAccountResponse response = RegistrationService.getInstance().createAccount(session, e);
+			BaseResponse response = RegistrationService.getInstance().createAccount(session, e);
 			
 			t.commit();
 			session.close();
 			
+			httpResponse.addHeader(
+					HttpHeaders.HEADER_TOKEN,
+					SecurityUtil.generateToken(
+							e.getEmail(), 
+							e.getPassword(), 
+							cxt.getClientInformation().getSecretKey()));
 			return response;	
 		}
 		catch(Exception e) {
@@ -52,7 +67,7 @@ public class RegistrationController {
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
 			response.status = "Error, please retry later";
 			
-			if(t != null)
+			if(t != null && t.isActive())
 				t.commit();
 			
 			session.close();
@@ -63,7 +78,7 @@ public class RegistrationController {
 
 	@RequestHandlerContract
 	@RequestMapping("/register")
-	public RegistrationResponse register(@RequestBody RegistrationRequest request){
+	public BaseResponse register(@RequestBody RegistrationRequest request, BindingResult bindingResult,HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction t = null;
 		try {
@@ -75,10 +90,17 @@ public class RegistrationController {
 			
 			t = session.beginTransaction();
 			
-			RegistrationResponse response= RegistrationService.getInstance().register(session, request.email, request.password);
+			BaseResponse response= RegistrationService.getInstance().register(session, request.email, request.password);
 			
 			t.commit();
 			session.close();
+
+			httpResponse.addHeader(
+					HttpHeaders.HEADER_TOKEN,
+					SecurityUtil.generateToken(
+							request.email, 
+							request.password, 
+							cxt.getClientInformation().getSecretKey()));
 			
 			return response;	
 		}
@@ -88,7 +110,7 @@ public class RegistrationController {
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
 			response.status = "Error, please retry later";
 			
-			if(t != null)
+			if(t != null && t.isActive())
 				t.commit();
 			
 			session.close();
