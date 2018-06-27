@@ -50,8 +50,6 @@ public class RegistrationInterceptor implements HandlerInterceptor {
 					response.sendError(HttpStatus.STATUS_UNAUTHORIZED, "token is not correct");
 					return false;
 				}
-				
-				response.setHeader(HttpHeaders.HEADER_TOKEN, tr.newToken);
 			}
 		}
 		return true;
