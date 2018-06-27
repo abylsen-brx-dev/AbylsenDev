@@ -89,6 +89,7 @@ public class RegistrationService extends BaseService{
 		if(!SecurityUtil.isPasswordValid(e.getPassword(), password)) {
 			response.code = HttpStatus.STATUS_BAD_REQUEST;
 			response.status = "Password is not valid";
+			return response;
 		}
 
 		response.code = HttpStatus.STATUS_OK;
