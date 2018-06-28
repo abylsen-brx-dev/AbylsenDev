@@ -7,6 +7,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import Logging.LoggerManager;
+
 public class ClientInformation {
 	private Integer id;
 	private String apikey;
@@ -58,7 +60,7 @@ public class ClientInformation {
 		try {
 			return session.get(ClientInformation.class, new Integer(id));
 		} catch (Exception e) {
-			System.out.println("[ClientInformation.getClientInformation] Error while looking for ClientInformation : " + e);
+			LoggerManager.getInstance().logError("[ClientInformation.getClientInformation] Error while looking for ClientInformation : ", e);
 			return null;
 		}
 	}
@@ -70,7 +72,7 @@ public class ClientInformation {
 			return (ClientInformation) criteria.add(Restrictions.eq("apikey", apiKey))
 			                             .uniqueResult();
 		} catch (Exception e) {
-			System.out.println("[ClientInformation.getClientInformationByApyKey] Error while getting ClientInformation : " + e);
+			LoggerManager.getInstance().logError("[ClientInformation.getClientInformationByApyKey] Error while getting ClientInformation : ", e);
 			return null;
 		}
 	}
@@ -83,7 +85,7 @@ public class ClientInformation {
 			list = session.createCriteria(ClientInformation.class).list();
 			return list;
 		} catch (Exception e) {
-			System.out.println("[ClientInformation.getAllClientInformation] Error while getting all ClientInformation : " + e);
+			LoggerManager.getInstance().logError("[ClientInformation.getAllClientInformation] Error while getting all ClientInformation : ", e);
 			return new ArrayList<ClientInformation>();
 		}
 	}
@@ -93,8 +95,8 @@ public class ClientInformation {
 			session.save(c);
 			
 			return true;
-		} catch (Exception ex) {
-			System.out.println("[PersonService.addClientInformation] Error while insert ClientInformation : " + ex);
+		} catch (Exception e) {
+			LoggerManager.getInstance().logError("[PersonService.addClientInformation] Error while insert ClientInformation : ", e);
 			return false;
 		}
 	}

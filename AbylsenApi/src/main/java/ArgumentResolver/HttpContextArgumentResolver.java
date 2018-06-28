@@ -9,6 +9,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolverComposite;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import Logging.LoggerManager;
 import enums.HttpHeaders;
 import model.ClientInformation;
 import model.Employee;
@@ -48,7 +49,7 @@ public class HttpContextArgumentResolver extends HandlerMethodArgumentResolverCo
 		    }
 	    }
 	    catch(Exception e) {
-	    	System.out.println("[HttpContextArgumentResolver.resolveArgument] Error : " + e.getMessage());
+	    	LoggerManager.getInstance().logError("[HttpContextArgumentResolver.resolveArgument] !!!!! ERROR !!!!!" , e);
 	    }
 	    
 	    session.close();

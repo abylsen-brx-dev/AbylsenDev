@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Session;
 
 import Dto.PersonDto;
+import Logging.LoggerManager;
 
 public class Person {
 	private Integer id;
@@ -46,7 +47,7 @@ public class Person {
 		try {
 			return session.get(Person.class, new Integer(id));
 		} catch (Exception e) {
-			System.out.println("[PersonService.addPerson] Error while insert person : " + e);
+			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert person : ", e);
 			return null;
 		}
 	}
@@ -58,7 +59,7 @@ public class Person {
 			list = session.createCriteria(Person.class).list();
 			return list;
 		} catch (Exception e) {
-			System.out.println("[PersonService.addPerson] Error while insert person : " + e);
+			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert person : ", e);
 			return new ArrayList<Person>();
 		}
 	}
@@ -67,8 +68,8 @@ public class Person {
 		try {
 			session.save(p);
 			return true;
-		} catch (Exception ex) {
-			System.out.println("[PersonService.addPerson] Error while insert person : " + ex);
+		} catch (Exception e) {
+			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert person : ", e);
 			return false;
 		}
 	}

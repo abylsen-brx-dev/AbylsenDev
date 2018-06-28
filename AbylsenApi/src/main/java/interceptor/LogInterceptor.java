@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import Logging.LoggerManager;
+
 public class LogInterceptor implements HandlerInterceptor {
 
 	@Override
@@ -24,7 +26,7 @@ public class LogInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
-		System.out.println("[LogInterceptor.preHandle] request received : " + request.getRequestURI() );
+		LoggerManager.getInstance().logDebug("[LogInterceptor.preHandle] request received : " + request.getRequestURI() );
 		return HandlerInterceptor.super.preHandle(request, response, handler);
 	}
 

@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import ArgumentResolver.HttpContextArgumentResolver;
+import Logging.LoggerManager;
 import initialization.InitializationEngine;
 import interceptor.LogInterceptor;
 import interceptor.RegistrationInterceptor;
@@ -20,26 +21,24 @@ import interceptor.SecurityInterceptor;
 @EnableAutoConfiguration
 @ComponentScan({ "controller", "service" })
 public class AbylsenApiApplication extends WebMvcConfigurationSupport {
-
-	private RegistrationInterceptor registrationInterceptor = new RegistrationInterceptor();
-	private SecurityInterceptor sercurityInterceptor = new SecurityInterceptor();
-	private LogInterceptor logInterceptor = new LogInterceptor();
 	
 	public static void main(String[] args) {
-		
+		LoggerManager.getInstance().logDebug("********* SERVER STARTING ***************");
 		//First we init the DB.
 		InitializationEngine ie = new InitializationEngine();
 		ie.start();
 		
 		SpringApplication.run(AbylsenApiApplication.class, args);
+
+		LoggerManager.getInstance().logDebug("*********SERVER IS STARTED***************");
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		//Watch out the order of the interceptor registration. 
-		registry.addInterceptor(logInterceptor);
-		registry.addInterceptor(sercurityInterceptor);
-		registry.addInterceptor(registrationInterceptor);
+		registry.addInterceptor(new LogInterceptor());
+		registry.addInterceptor(new SecurityInterceptor());
+		registry.addInterceptor(new RegistrationInterceptor());
 	}
 
 	@Override

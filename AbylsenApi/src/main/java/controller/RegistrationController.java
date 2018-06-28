@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ArgumentResolver.HttpContext;
+import Logging.LoggerManager;
 import annotation.RequestHandlerContract;
 import enums.HttpHeaders;
 import enums.HttpStatus;
@@ -63,7 +64,7 @@ public class RegistrationController {
 			return response;	
 		}
 		catch(Exception e) {
-			System.out.println("[RegistrationController.create] ERROR : " + e.getMessage());
+			LoggerManager.getInstance().logError("[RegistrationController.create] !!!!! ERROR !!!!!", e);
 			CreateAccountResponse response = new CreateAccountResponse();
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
 			response.status = "Error, please retry later";
@@ -106,7 +107,7 @@ public class RegistrationController {
 			return response;	
 		}
 		catch(Exception e) {
-			System.out.println("[RegistrationController.register] ERROR : " + e.getMessage());
+			LoggerManager.getInstance().logError("[RegistrationController.register] !!!!! ERROR !!!!!", e);
 			RegistrationResponse response = new RegistrationResponse();
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
 			response.status = "Error, please retry later";
@@ -135,6 +136,7 @@ public class RegistrationController {
 							cxt.getUser().getPassword(), 
 							cxt.getClientInformation().getSecretKey()));
 		} catch (UnsupportedEncodingException e) {
+			LoggerManager.getInstance().logError("[RegistrationController.keepAlive] !!!!! ERROR !!!!!", e);
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
 			response.status = "Error, try again later";
 		}

@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 
 import Dto.EmployeeDto;
 import Dto.PersonDto;
+import Logging.LoggerManager;
 
 public class Employee extends Person {
 	
@@ -45,7 +46,7 @@ public class Employee extends Person {
 		try {
 			return session.get(Employee.class, new Integer(id));
 		} catch (Exception e) {
-			System.out.println("[Employee.getEmployee] Error while looking for employee : " + e);
+			LoggerManager.getInstance().logError("[Employee.getEmployee] Error while looking for employee : ", e);
 			return null;
 		}
 	}
@@ -57,7 +58,7 @@ public class Employee extends Person {
 			return (Employee) criteria.add(Restrictions.eq("email", email))
 			                             .uniqueResult();
 		} catch (Exception e) {
-			System.out.println("[Employee.getEmployee] Error while looking for employee : " + e);
+			LoggerManager.getInstance().logError("[Employee.getEmployee] Error while looking for employee : ", e);
 			throw(e);
 		}
 	}
@@ -69,7 +70,7 @@ public class Employee extends Person {
 			list = session.createCriteria(Person.class).list();
 			return list;
 		} catch (Exception e) {
-			System.out.println("[Employee.getAllEmployee] Error while getting all employees : " + e);
+			LoggerManager.getInstance().logError("[Employee.getAllEmployee] Error while getting all employees : ", e);
 			return new ArrayList<Employee>();
 		}
 	}
@@ -78,8 +79,8 @@ public class Employee extends Person {
 		try {
 			session.save(p);
 			return true;
-		} catch (Exception ex) {
-			System.out.println("[PersonService.addPerson] Error while insert employee : " + ex);
+		} catch (Exception e) {
+			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert employee : ", e);
 			return false;
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import Logging.LoggerManager;
 import interfaces.IInitializer;
 import util.HibernateUtil;
 
@@ -25,17 +26,17 @@ public class InitializationEngine {
 			if(i == null)
 				continue;
 
-			System.out.println("Start " + i.getClass().getName());
+			LoggerManager.getInstance().logDebug("[InitializationEngine.start] Start " + i.getClass().getName());
 
 			session = HibernateUtil.getSessionFactory().openSession();
 			tx = session.beginTransaction();
 			
 			try{
 				i.startInit(session);
-				System.out.println("==> Finish without errors");
+				LoggerManager.getInstance().logDebug("[InitializationEngine.start] ==> Finish without errors");
 			}
 			catch(Exception e) {
-				System.out.println("!!!!! Errors : " + e.getMessage());
+				LoggerManager.getInstance().logError("[InitializationEngine.start] !!!!! ERROR !!!!!", e);
 			}
 			
 			tx.commit();

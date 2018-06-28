@@ -20,18 +20,11 @@ public class SecurityInterceptor implements HandlerInterceptor {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-
-		response.setHeader(HttpHeaders.HEADER_SECRET_KEY, "hidden");
 	}
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-
-		response.setHeader(HttpHeaders.HEADER_SECRET_KEY, "hidden");
-		// We have nothing to do here
-		// System.out.println("[SecurityInterceptor.afterCompletion] the execution is
-		// done !!");
 	}
 
 	@Override
