@@ -29,6 +29,10 @@
     -fx-background-color: #1d1d1d;
 }
 
+.background-connection{
+    -fx-background-color: #cbeaf7;
+}
+
 .header{
     -fx-font-size: 3.5em;
     -fx-font-family: "Segoe UI Light";
@@ -179,7 +183,7 @@
     -fx-background-radius: 0;
     -fx-border-color: #d1d1d1;
     -fx-border-width: 2px;
-    -fx-borders-style: solid;
+/*     -fx-borders-style: solid; */
     -fx-padding: 1;
 }
 
@@ -535,8 +539,8 @@
     -fx-background-radius: 0, 0, 0, 0;
     -fx-padding: 0em 0.166667em 0em 0.166667em; /* 0 2px 0 2px*/
 
-    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-    -fx-font-size: 1.333333em; /* 16 */
+/*     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif; */
+/*     -fx-font-size: 1.333333em;  16 */ 
 }
 
 .combo-box-base:hover {
