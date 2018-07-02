@@ -2,7 +2,6 @@ package controller;
 
 import java.io.UnsupportedEncodingException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
@@ -33,7 +32,7 @@ public class RegistrationController {
 
 	@RequestHandlerContract
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public BaseResponse create(@RequestBody CreateAccountRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
+	public BaseResponse create(@RequestBody CreateAccountRequest request, HttpServletResponse httpResponse, HttpContext cxt){
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction t = null;
 		
@@ -79,8 +78,8 @@ public class RegistrationController {
 	
 
 	@RequestHandlerContract
-	@RequestMapping("/register")
-	public BaseResponse register(@RequestBody RegistrationRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt){
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public BaseResponse register(@RequestBody RegistrationRequest request, HttpServletResponse httpResponse, HttpContext cxt){
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction t = null;
 		try {
@@ -122,7 +121,7 @@ public class RegistrationController {
 	
 	@RequestHandlerContract(needRegistration = true)
 	@RequestMapping("/keepalive")
-	public BaseResponse keepAlive(HttpServletRequest httpRequest, HttpServletResponse httpResponse, HttpContext cxt) {
+	public BaseResponse keepAlive(HttpServletResponse httpResponse, HttpContext cxt) {
 		BaseResponse response = new BaseResponse();
 		
 		response.code = HttpStatus.STATUS_OK;

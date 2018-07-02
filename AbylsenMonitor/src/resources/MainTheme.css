@@ -1,0 +1,32 @@
+
+ .background {
+	-fx-background-image: url('connection_background_color.jpg'), url('connection_background.gif');
+	-fx-background-size: 100% 100%, 45% 55%;
+	-fx-background-repeat: no-repeat no-repeat;
+	-fx-background-position: center, center;
+	
+}
+
+.connection-container{
+	-fx-background-color: #ffffff;
+}
+
+.connection-container2{
+	-fx-background-color: #c0c0c0;
+}
+
+.toast-container2{
+	-fx-background-color: #c0c0c0;
+	-fx-border-radius: 10;
+	-fx-border-style: solid inside;
+	-fx-border-color: #c0c0c0;
+	-fx-border-insets: 5;
+}
+
+.button-valid{
+	-fx-background-color: #709d66
+}
+
+.button-cancel{
+	-fx-background-color: #d42f2f
+}

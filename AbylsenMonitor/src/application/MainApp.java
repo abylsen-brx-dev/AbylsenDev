@@ -7,7 +7,6 @@ import views.ConnectionController;
 import views.RootController;
 
 public class MainApp extends Application {
-	private Stage mainStage;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {

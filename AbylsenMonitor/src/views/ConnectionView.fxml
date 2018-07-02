@@ -1,13 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<fx:root styleClass="background-connection" stylesheets="@DarkTheme.css" type="BorderPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../resources/MainTheme.css" type="BorderPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <HBox alignment="BOTTOM_CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane>
+               <children>
+                  <VBox fx:id="signinBox" alignment="TOP_CENTER" spacing="10.0" styleClass="connection-container2" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0">
+                     <padding>
+                        <Insets left="13.0" right="10.0" top="3.0" />
+                     </padding>
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="NEW ACCOUNT">
+                           <VBox.margin>
+                              <Insets top="6.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField promptText="Email" fx:id="signinEmail" />
+                        <JFXPasswordField promptText="Password" fx:id="signinPassword"/>
+                        <JFXTextField promptText="First Name" fx:id="signinFirstName"/>
+                        <JFXTextField promptText="Last Name" fx:id="signinLastName"/>
+                        <JFXButton onAction="#handleSend" styleClass="button-valid" text="Sign in" textAlignment="CENTER" textFill="WHITE" />
+                        <JFXButton fx:id="goToLogin" onAction="#handleSwitchToLogin" ripplerFill="#8daeb7" styleClass="button-cancel" text="Log in" textAlignment="CENTER" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </JFXButton>
+                        <JFXProgressBar fx:id="progressBarSignin" visible="false" />
+                     </children>
+                  </VBox>
+                  <VBox fx:id="connectionBox" alignment="TOP_CENTER" spacing="10.0" styleClass="connection-container" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="-5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="CONNECTION">
+                           <VBox.margin>
+                              <Insets top="6.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField promptText="Email" fx:id="loginEmail"/>
+                        <JFXPasswordField promptText="Password" fx:id="loginPassword"/>
+                        <JFXButton onAction="#handleSend" styleClass="button-valid" text="Log in" textAlignment="CENTER" textFill="WHITE" />
+                        <JFXButton onAction="#handleSwitchToSignin" ripplerFill="#8daeb7" styleClass="button-cancel" text="Sign in" textAlignment="CENTER" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </JFXButton>
+                        <JFXProgressBar fx:id="progressBarLogin" visible="false" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <HBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <VBox fx:id="toastContainer" alignment="TOP_CENTER" layoutX="260.0" layoutY="10.0" spacing="5.0">
+               <HBox.margin>
+                  <Insets top="10.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </top>
 </fx:root>

@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<fx:root styleClass="background" stylesheets="@DarkTheme.css" type="BorderPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="BorderPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <TabPane fx:id="tabPane" styleClass="item-title" stylesheets="@DarkTheme.css" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabPane" BorderPane.alignment="CENTER">
          <tabs>
             <Tab text="DASHBOARD">
               <content>

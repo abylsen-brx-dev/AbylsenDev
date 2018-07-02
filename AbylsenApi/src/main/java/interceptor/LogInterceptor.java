@@ -25,9 +25,9 @@ public class LogInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		
+
 		LoggerManager.getInstance().logDebug("[LogInterceptor.preHandle] request received : " + request.getRequestURI() );
+	
 		return HandlerInterceptor.super.preHandle(request, response, handler);
 	}
-
 }
