@@ -14,4 +14,7 @@ public interface IAbylsenApiRestClient {
 	
 	@POST("/registration/create/")
 	Call<BaseResponse> create(@Body CreateAccountRequest request);
+	
+	@POST("/registration/keepalive/")
+	Call<BaseResponse> keepAlive();
 }

@@ -1,20 +1,31 @@
 package application;
 
+import contexte.MainApplicationContexte;
 import javafx.application.Application;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import views.ConnectionController;
 import views.RootController;
 
 public class MainApp extends Application {
 	
+	private Parent current;
+	private Parent previous;
+	private Stage stage;
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
-			primaryStage.setTitle("Abyslen monitor");
-			primaryStage.setScene(getConnectionScene());
-			primaryStage.setMaximized(true);
-			primaryStage.show();
+			MainApplicationContexte.getInstance().setMainApp(this);
+			
+			this.stage = primaryStage;
+			stage.setTitle("Abyslen monitor");
+			stage.setScene(new Scene(new ConnectionController()));
+			stage.setMaximized(true);
+			stage.show();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -24,19 +35,23 @@ public class MainApp extends Application {
 		launch(args);
 	}
 	
-	private Scene getMainScene() {
-		RootController root = new RootController();
+	public void navigateTo(Parent p) {
+		if(p == null)
+			return;
 		
-		Scene scene = new Scene(root);
+		previous = current;
+		current = p;
 		
-		return scene;
+		stage.setScene(new Scene(current));
 	}
 	
-	private Scene getConnectionScene() {
-		ConnectionController root = new ConnectionController();
+	public void goBack() {
+		if(previous == null)
+			return;
 		
-		Scene scene = new Scene(root);
+		current = previous;
+		previous = null;
 		
-		return scene;
+		stage.setScene(new Scene(current));
 	}
 }

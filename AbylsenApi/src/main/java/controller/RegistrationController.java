@@ -120,7 +120,7 @@ public class RegistrationController {
 	}
 	
 	@RequestHandlerContract(needRegistration = true)
-	@RequestMapping("/keepalive")
+	@RequestMapping(value = "/keepalive", method = RequestMethod.POST)
 	public BaseResponse keepAlive(HttpServletResponse httpResponse, HttpContext cxt) {
 		BaseResponse response = new BaseResponse();
 		

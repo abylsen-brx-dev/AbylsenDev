@@ -2,6 +2,7 @@ package RestClient;
 
 import java.io.IOException;
 
+import contexte.MainApplicationContexte;
 import enums.HttpHeaders;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -24,10 +25,11 @@ public class RetrofitClient {
                 public Response intercept(Chain chain) throws IOException {
                     Request original = chain.request();
                     Request request = original.newBuilder()
-                            .header(HttpHeaders.HEADER_APIKEY, "devApiKey123456")
-                            .header(HttpHeaders.HEADER_TOKEN, "devApiKey123456")
+                            .header(HttpHeaders.HEADER_APIKEY, MainApplicationContexte.getInstance().getApiKey())
+                            .header(HttpHeaders.HEADER_TOKEN, MainApplicationContexte.getInstance().getToken())
                             .method(original.method(), original.body())
                             .build();
+                    
                     return chain.proceed(request);
                 }
             });

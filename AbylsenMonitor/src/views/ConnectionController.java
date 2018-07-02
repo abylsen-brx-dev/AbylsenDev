@@ -2,7 +2,6 @@ package views;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTextField;
@@ -10,8 +9,8 @@ import com.jfoenix.controls.JFXTextField;
 import Dto.EmployeeDto;
 import RestClient.Util;
 import RestClient.AbylsenApi.IAbylsenApiRestClient;
+import contexte.MainApplicationContexte;
 import controls.Toast;
-import enums.HttpStatus;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -43,11 +42,11 @@ public class ConnectionController extends BorderPane {
 
 	@FXML
 	private JFXProgressBar progressBarLogin;
-	
+
 	@FXML
 	private JFXTextField signinEmail;
-	
-	@FXML 
+
+	@FXML
 	private JFXPasswordField signinPassword;
 
 	@FXML
@@ -55,13 +54,13 @@ public class ConnectionController extends BorderPane {
 
 	@FXML
 	private JFXTextField signinLastName;
-	
+
 	@FXML
 	private JFXTextField loginEmail;
-	
-	@FXML 
+
+	@FXML
 	private JFXPasswordField loginPassword;
-	
+
 	private VBox selectedBox;
 
 	private IAbylsenApiRestClient client;
@@ -76,7 +75,11 @@ public class ConnectionController extends BorderPane {
 			fxmlLoader.load();
 
 			selectedBox = connectionBox;
+			connectionBox.setVisible(false);
+			signinBox.setVisible(false);
 			client = Util.getAPIService();
+			
+			keeAlive();
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -88,7 +91,8 @@ public class ConnectionController extends BorderPane {
 			register(loginEmail.getText(), loginPassword.getText());
 		}
 		if (selectedBox == signinBox) {
-			create(signinEmail.getText(), signinPassword.getText(), signinFirstName.getText(), signinLastName.getText());
+			create(signinEmail.getText(), signinPassword.getText(), signinFirstName.getText(),
+					signinLastName.getText());
 		}
 	}
 
@@ -158,32 +162,78 @@ public class ConnectionController extends BorderPane {
 		return tt;
 	}
 
+	public void keeAlive() {
+		client.keepAlive().enqueue(new Callback<BaseResponse>() {
+			@Override
+			public void onResponse(Call<BaseResponse> arg0, Response<BaseResponse> arg1) {
+				BaseResponse responseTemp = arg1.body();
+				if (responseTemp == null) {
+					responseTemp = new BaseResponse();
+					responseTemp.status = "Error while contacting the server.";
+					responseTemp.code = arg1.code();
+				}
+				final BaseResponse br = responseTemp;
+
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						if (br.code == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
+							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
+						} else {
+							connectionBox.setVisible(true);
+							signinBox.setVisible(true);
+						}
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						connectionBox.setVisible(true);
+						signinBox.setVisible(true);
+						new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+					}
+				});
+			}
+		});
+	}
+	
 	public void register(String email, String password) {
 		RegistrationRequest request = new RegistrationRequest();
 		request.email = email;
 		request.password = password;
-		
+
 		client.register(request).enqueue(new Callback<BaseResponse>() {
 			@Override
 			public void onResponse(Call<BaseResponse> arg0, Response<BaseResponse> arg1) {
 				BaseResponse responseTemp = arg1.body();
-				if(responseTemp == null) {
+				if (responseTemp == null) {
 					responseTemp = new BaseResponse();
 					responseTemp.status = "Error while contacting the server.";
 					responseTemp.code = arg1.code();
 				}
 				final BaseResponse br = responseTemp;
-				
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showProgressBar(false);
-						selectedBox.setDisable(false);
-						new Toast(toastContainer).show(String.valueOf(br.code) + br.status, Toast.DURATION_LONG);
+						if (br.code == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
+							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
+						} else {
+							showProgressBar(false);
+							wizz(selectedBox);
+							new Toast(toastContainer).show(String.valueOf(br.code) + " - " + br.status,
+									Toast.DURATION_LONG);
+						}
 					}
 				});
 			}
-			
+
 			@Override
 			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
 				Platform.runLater(new Runnable() {
@@ -195,46 +245,55 @@ public class ConnectionController extends BorderPane {
 					}
 				});
 			}
-		});;
+		});
 
 		showProgressBar(true);
 		selectedBox.setDisable(true);
 	}
-	
+
 	public void create(String email, String password, String firstName, String lastName) {
 		CreateAccountRequest request = new CreateAccountRequest();
 		request.account = new EmployeeDto();
-		
+
 		request.account.setEmail(email);
 		request.account.setFirstName(firstName);
 		request.account.setLastName(lastName);
 		request.account.setPassword(password);
-		
+
 		client.create(request).enqueue(new Callback<BaseResponse>() {
 			@Override
 			public void onResponse(Call<BaseResponse> arg0, Response<BaseResponse> arg1) {
 				BaseResponse responseTemp = arg1.body();
-				if(responseTemp == null) {
+				if (responseTemp == null) {
 					responseTemp = new BaseResponse();
 					responseTemp.status = "Error while contacting the server.";
 					responseTemp.code = arg1.code();
 				}
 				final BaseResponse br = responseTemp;
-				
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
 						showProgressBar(false);
 						selectedBox.setDisable(false);
-						new Toast(toastContainer).show(String.valueOf(br.code) + " - " + br.status, Toast.DURATION_LONG);
+
+						if (br.code == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
+							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
+						} else {
+							showProgressBar(false);
+							wizz(selectedBox);
+							new Toast(toastContainer).show(String.valueOf(br.code) + " - " + br.status,
+									Toast.DURATION_LONG);
+						}
 					}
 				});
 			}
-			
+
 			@Override
 			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
 				Platform.runLater(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						showProgressBar(false);
@@ -243,12 +302,12 @@ public class ConnectionController extends BorderPane {
 					}
 				});
 			}
-		});;
+		});
 
 		showProgressBar(true);
 		selectedBox.setDisable(true);
 	}
-	
+
 	private void showProgressBar(boolean visible) {
 		progressBarLogin.setVisible(visible);
 		progressBarSignin.setVisible(visible);
