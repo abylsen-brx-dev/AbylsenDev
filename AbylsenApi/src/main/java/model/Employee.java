@@ -15,6 +15,7 @@ public class Employee extends Person {
 	
 	private String email;
 	private String password;
+	private String poste;
 	
 	public String getEmail() {
 		return email;
@@ -32,11 +33,20 @@ public class Employee extends Person {
 		this.password = password;
 	}
 	
+	public String getPoste() {
+		return poste;
+	}
+	
+	public void setPoste(String poste) {
+		this.poste = poste;
+	}
+	
 	@Override
 	public void fromDto(PersonDto e) {
 		if(e instanceof EmployeeDto) {
 			this.email = ((EmployeeDto)e).getEmail();
 			this.password = ((EmployeeDto)e).getPassword();
+			this.poste = ((EmployeeDto)e).getPoste();
 		}
 		
 		super.fromDto(e);

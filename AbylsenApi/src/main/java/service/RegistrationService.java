@@ -2,6 +2,7 @@ package service;
 
 import org.hibernate.Session;
 
+import enums.EmployeeEnums;
 import enums.HttpStatus;
 import model.BaseResponse;
 import model.Employee;
@@ -55,6 +56,12 @@ public class RegistrationService extends BaseService{
 			return response;
 		}
 		
+		if(e.getPoste() == null || e.getPoste() == "" || !EmployeeEnums.isTypeExists(e.getPoste())) {
+			response.code = HttpStatus.STATUS_BAD_REQUEST;
+			response.status = "AccountType is empty or not valid";
+			return response;
+		}
+		
 		if(!Employee.addEmployee(session, e)) {
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
 			response.status = "Internal error, try later";
@@ -93,7 +100,7 @@ public class RegistrationService extends BaseService{
 		}
 
 		response.code = HttpStatus.STATUS_OK;
-		response.status = "registration done";
+		response.status = e.getPoste();
 		
 		return response;
 	}

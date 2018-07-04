@@ -59,7 +59,8 @@ public class RegistrationController {
 					SecurityUtil.generateToken(
 							e.getEmail(), 
 							e.getPassword(), 
-							cxt.getClientInformation().getSecretKey()));
+							cxt.getClientInformation().getSecretKey(),
+							e.getPoste()));
 			return response;	
 		}
 		catch(Exception e) {
@@ -101,7 +102,8 @@ public class RegistrationController {
 					SecurityUtil.generateToken(
 							request.email, 
 							request.password, 
-							cxt.getClientInformation().getSecretKey()));
+							cxt.getClientInformation().getSecretKey(),
+							response.status));
 			
 			return response;	
 		}
@@ -133,7 +135,8 @@ public class RegistrationController {
 					SecurityUtil.generateToken(
 							cxt.getUser().getEmail(), 
 							cxt.getUser().getPassword(), 
-							cxt.getClientInformation().getSecretKey()));
+							cxt.getClientInformation().getSecretKey(),
+							cxt.getUser().getPoste()));
 		} catch (UnsupportedEncodingException e) {
 			LoggerManager.getInstance().logError("[RegistrationController.keepAlive] !!!!! ERROR !!!!!", e);
 			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;

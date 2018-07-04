@@ -7,7 +7,6 @@
 	<groupId>AbylsenDev</groupId>
 	<artifactId>AbylsenApi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
 
 	<name>AbylsenApi</name>
 	<description>Abylsen Rest web service</description>
@@ -74,6 +73,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

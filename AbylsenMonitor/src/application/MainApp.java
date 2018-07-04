@@ -2,19 +2,17 @@ package application;
 
 import contexte.MainApplicationContexte;
 import javafx.application.Application;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import views.ConnectionController;
-import views.RootController;
 
 public class MainApp extends Application {
 	
 	private Parent current;
 	private Parent previous;
 	private Stage stage;
+	private Scene oldScene;
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
@@ -42,7 +40,8 @@ public class MainApp extends Application {
 		previous = current;
 		current = p;
 		
-		stage.setScene(new Scene(current));
+		oldScene = stage.getScene();
+		stage.setScene(new Scene(current, oldScene.getWidth(), oldScene.getHeight()));
 	}
 	
 	public void goBack() {
@@ -52,6 +51,7 @@ public class MainApp extends Application {
 		current = previous;
 		previous = null;
 		
-		stage.setScene(new Scene(current));
+		oldScene = stage.getScene();
+		stage.setScene(new Scene(current, oldScene.getWidth(), oldScene.getHeight()));
 	}
 }

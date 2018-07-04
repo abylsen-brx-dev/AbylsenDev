@@ -1,0 +1,12 @@
+model\BaseRequest.class
+model\BaseResponse.class
+model\CreateAccountResponse.class
+model\CreateAccountRequest.class
+model\RegistrationRequest.class
+enums\EmployeeEnums.class
+model\RegistrationResponse.class
+Dto\PersonDto.class
+enums\HttpStatus.class
+model\GetInfoResponse.class
+Dto\EmployeeDto.class
+enums\HttpHeaders.class

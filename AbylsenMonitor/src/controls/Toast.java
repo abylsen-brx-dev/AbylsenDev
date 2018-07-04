@@ -42,7 +42,7 @@ public class Toast extends Label {
 				  public void run() {
 					  hide();
 				  }
-				}, (int)(duration*1000));
+				}, (int)(duration*1500));
 		});
 		
 		ft.play();

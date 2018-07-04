@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
+
+<fx:root alignment="TOP_CENTER" stylesheets="@../resources/MainTheme.css" type="HBox" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Circle fx:id="circle" fill="TRANSPARENT" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
+   </children>
+</fx:root>
+

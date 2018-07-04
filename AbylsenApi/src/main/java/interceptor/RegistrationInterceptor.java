@@ -9,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import annotation.RequestHandlerContract;
+import enums.EmployeeEnums;
 import enums.HttpHeaders;
 import enums.HttpStatus;
 import model.ClientInformation;
@@ -49,6 +50,13 @@ public class RegistrationInterceptor implements HandlerInterceptor {
 				if(!tr.isValid) {
 					response.sendError(HttpStatus.STATUS_UNAUTHORIZED, "token is not correct");
 					return false;
+				}
+				
+				if(!(a.needRights() == null || a.needRights().equals(""))) {
+					if(!EmployeeEnums.haveRights(a.needRights(), tr.rule)) {
+						response.sendError(HttpStatus.STATUS_UNAUTHORIZED, "The current user does not have the good rigths");
+						return false;
+					}
 				}
 			}
 		}

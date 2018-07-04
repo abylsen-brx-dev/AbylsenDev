@@ -4,6 +4,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import enums.EmployeeEnums;
 import interfaces.IInitializer;
 import model.Employee;
 import model.Person;
@@ -16,8 +17,8 @@ public class PersonInitializer implements IInitializer {
 		createPersonIfNotExists(session, "Person1", "Dev");
 		createPersonIfNotExists(session, "Person2", "Dev");
 
-		createEmployeeIfNotExists(session, "Employee1", "Dev", "employee1.dev@dev.com", "devPassword");
-		createEmployeeIfNotExists(session, "Employee2", "Dev", "employee2.dev@dev.com", "devPassword");
+		createEmployeeIfNotExists(session, "Employee1", "Dev", "employee1.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee2", "Dev", "employee2.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
 	}
 
 	private Person createPersonIfNotExists(Session session, String firstName, String lastName) {
@@ -38,7 +39,7 @@ public class PersonInitializer implements IInitializer {
 		return p;
 	}
 	
-	private Employee createEmployeeIfNotExists(Session session, String firstName, String lastName, String email, String password) {
+	private Employee createEmployeeIfNotExists(Session session, String firstName, String lastName, String email, String password, String poste) {
 		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(Employee.class);
 		
@@ -46,6 +47,7 @@ public class PersonInitializer implements IInitializer {
 		criteria.add(Restrictions.eq("lastName", lastName));
 		criteria.add(Restrictions.eq("email", email));
 		criteria.add(Restrictions.eq("password", password));
+		criteria.add(Restrictions.eq("poste", poste));
 		
 		
 		Employee e = new Employee();
@@ -54,6 +56,7 @@ public class PersonInitializer implements IInitializer {
 		e.setLastName(lastName);
 		e.setEmail(email);
 		e.setPassword(password);
+		e.setPoste(poste);
 
 		if(criteria.uniqueResult() == null)
 			session.save(e);

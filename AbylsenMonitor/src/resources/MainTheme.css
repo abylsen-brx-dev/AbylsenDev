@@ -7,6 +7,10 @@
 	
 }
 
+.drawer-contairner{
+	-fx-background-color: #e0e0e0;
+}
+
 .connection-container{
 	-fx-background-color: #ffffff;
 }
@@ -29,4 +33,23 @@
 
 .button-cancel{
 	-fx-background-color: #d42f2f
+}
+
+.title-container {
+	-fx-background-color: #d42f2f
+}
+
+.title{
+	-fx-text-fill : white;
+	-fx-font-size: 16px;
+}
+
+.jfx-hamburger StackPane {
+	-fx-background-color: white;
+}
+
+.rounded-image{
+	-fx-padding: 2;
+	-fx-background-color: black;
+	-fx-background-radius: 1000000;
 }

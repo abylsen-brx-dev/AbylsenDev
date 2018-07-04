@@ -18,23 +18,24 @@ public class SecurityUtil {
 
 			String email = (String) claims.getBody().get("email"); 
 			String pwd = (String) claims.getBody().get("pwd");
+			String rule = (String) claims.getBody().get("rule");
 			
 			Employee e = Employee.getEmployeeByEmail(session, email);
 			if(e == null)
-				return new TokenResponse(null, null, null, false);
+				return new TokenResponse(null, null, null, null, false);
 			
-			return new TokenResponse(email, pwd, generateToken(email, pwd, secretKey), e.getPassword().equals(pwd));
+			return new TokenResponse(email, pwd, rule, generateToken(email, pwd, secretKey, rule), e.getPassword().equals(pwd));
 		} catch (Exception e) {
-			return new TokenResponse(null, null,null, false);
+			return new TokenResponse(null, null, null, null, false);
 		}
 	}
 	
-	public static String generateToken(String email, String pwd, String secretKey) throws UnsupportedEncodingException {
+	public static String generateToken(String email, String pwd, String secretKey, String rule) throws UnsupportedEncodingException {
 		Calendar now = Calendar.getInstance();
-		now.add(Calendar.HOUR_OF_DAY, 1);
+		now.add(Calendar.HOUR_OF_DAY, 20);
 		String jwt = Jwts.builder()
 				.setExpiration(now.getTime())
-				.claim("email", email).claim("pwd", pwd)
+				.claim("email", email).claim("pwd", pwd).claim("rule", rule)
 				.signWith(SignatureAlgorithm.HS256, secretKey.getBytes("UTF-8")).compact();
 		return jwt;
 	}

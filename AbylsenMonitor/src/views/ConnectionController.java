@@ -5,12 +5,14 @@ import java.io.IOException;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXToggleButton;
 
 import Dto.EmployeeDto;
 import RestClient.Util;
 import RestClient.AbylsenApi.IAbylsenApiRestClient;
 import contexte.MainApplicationContexte;
 import controls.Toast;
+import enums.EmployeeEnums;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.BaseResponse;
 import model.CreateAccountRequest;
+import model.GetInfoResponse;
 import model.RegistrationRequest;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,6 +64,9 @@ public class ConnectionController extends BorderPane {
 	@FXML
 	private JFXPasswordField loginPassword;
 
+	@FXML
+	private JFXToggleButton signinAccountType;
+	
 	private VBox selectedBox;
 
 	private IAbylsenApiRestClient client;
@@ -79,6 +85,7 @@ public class ConnectionController extends BorderPane {
 			signinBox.setVisible(false);
 			client = Util.getAPIService();
 			
+			handleChangeAccountType();
 			keeAlive();
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
@@ -91,8 +98,12 @@ public class ConnectionController extends BorderPane {
 			register(loginEmail.getText(), loginPassword.getText());
 		}
 		if (selectedBox == signinBox) {
-			create(signinEmail.getText(), signinPassword.getText(), signinFirstName.getText(),
-					signinLastName.getText());
+			create(
+					signinEmail.getText(), 
+					signinPassword.getText(), 
+					signinFirstName.getText(),
+					signinLastName.getText(), 
+					signinAccountType.isSelected() ? EmployeeEnums.TYPE_CONSULTANT : EmployeeEnums.TYPE_MANAGER);
 		}
 	}
 
@@ -108,6 +119,14 @@ public class ConnectionController extends BorderPane {
 		selectedBox = connectionBox;
 	}
 
+	@FXML
+	private void handleChangeAccountType() {
+		if(signinAccountType.isSelected())
+			signinAccountType.setText("Manager");
+		else
+			signinAccountType.setText("Consultant");
+	}
+	
 	private void wizz(Node n) {
 		n.setDisable(true);
 		TranslateTransition tt = new TranslateTransition();
@@ -179,7 +198,7 @@ public class ConnectionController extends BorderPane {
 					public void run() {
 						if (br.code == 200) {
 							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
-							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
+							getInfo();
 						} else {
 							connectionBox.setVisible(true);
 							signinBox.setVisible(true);
@@ -223,7 +242,7 @@ public class ConnectionController extends BorderPane {
 					public void run() {
 						if (br.code == 200) {
 							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
-							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
+							getInfo();
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
@@ -251,7 +270,7 @@ public class ConnectionController extends BorderPane {
 		selectedBox.setDisable(true);
 	}
 
-	public void create(String email, String password, String firstName, String lastName) {
+	public void create(String email, String password, String firstName, String lastName, String accountType) {
 		CreateAccountRequest request = new CreateAccountRequest();
 		request.account = new EmployeeDto();
 
@@ -259,7 +278,8 @@ public class ConnectionController extends BorderPane {
 		request.account.setFirstName(firstName);
 		request.account.setLastName(lastName);
 		request.account.setPassword(password);
-
+		request.account.setPoste(accountType);
+		
 		client.create(request).enqueue(new Callback<BaseResponse>() {
 			@Override
 			public void onResponse(Call<BaseResponse> arg0, Response<BaseResponse> arg1) {
@@ -279,7 +299,7 @@ public class ConnectionController extends BorderPane {
 
 						if (br.code == 200) {
 							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
-							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
+							getInfo();
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
@@ -308,6 +328,54 @@ public class ConnectionController extends BorderPane {
 		selectedBox.setDisable(true);
 	}
 
+	public void getInfo() {
+		client.getInfo().enqueue(new Callback<GetInfoResponse>() {
+			
+			@Override
+			public void onResponse(Call<GetInfoResponse> arg0, Response<GetInfoResponse> arg1) {
+				GetInfoResponse responseTemp = arg1.body();
+				if (responseTemp == null) {
+					responseTemp = new GetInfoResponse();
+					responseTemp.status = "Error while contacting the server.";
+					responseTemp.code = arg1.code();
+				}
+				final GetInfoResponse br = responseTemp;
+
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showProgressBar(false);
+						selectedBox.setDisable(false);
+
+						if (br.code == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
+							MainApplicationContexte.getInstance().setUser(br.account);
+							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
+						} else {
+							showProgressBar(false);
+							wizz(selectedBox);
+							new Toast(toastContainer).show(String.valueOf(br.code) + " - " + br.status,
+									Toast.DURATION_LONG);
+						}
+					}
+				});
+			}
+			
+			@Override
+			public void onFailure(Call<GetInfoResponse> arg0, Throwable arg1) {
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+						showProgressBar(false);
+						wizz(selectedBox);
+						new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+					}
+				});
+			}
+		});
+	}
+	
 	private void showProgressBar(boolean visible) {
 		progressBarLogin.setVisible(visible);
 		progressBarSignin.setVisible(visible);

@@ -20,7 +20,7 @@
 		<property name="hibernate.hbm2ddl.auto">update</property>		
 		<property name="show_sql">true</property>
 	
-		<mapping resource="model/Person.hbm.xml"/>
-		<mapping resource="model/ClientInformation.hbm.xml"/>
+		<mapping resource="Person.hbm.xml"/>
+		<mapping resource="ClientInformation.hbm.xml"/>
 	</session-factory>
 </hibernate-configuration>

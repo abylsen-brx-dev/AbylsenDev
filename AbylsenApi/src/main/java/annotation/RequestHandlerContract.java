@@ -11,5 +11,6 @@ public @interface RequestHandlerContract {
 	
 	public boolean needRegistration() default false;
 	public boolean needApiKey() default true;
+	public String needRights() default "";
 }
 	

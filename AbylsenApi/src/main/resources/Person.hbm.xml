@@ -15,6 +15,7 @@
 			<key column="ID"/>
 			<property name="email" column="EMAIL" unique="true"/>  
 			<property name="password" column="PASSWORD"/>  
+			<property name="poste" column="POSTE"/>  
 		</joined-subclass>  
 	</class>
 </hibernate-mapping>

@@ -55,7 +55,6 @@ public class SecurityInterceptor implements HandlerInterceptor {
 				}	
 				
 				session.close();
-				response.addHeader(HttpHeaders.HEADER_SECRET_KEY, ci.getSecretKey());
 			}
 		}
 
