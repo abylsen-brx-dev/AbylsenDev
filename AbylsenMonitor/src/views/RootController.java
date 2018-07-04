@@ -8,6 +8,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 
+import contexte.MainApplicationContexte;
+import controls.MinimalistAccountViewer;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -71,6 +73,8 @@ public class RootController extends BorderPane {
 
 		JFXButton currentNode;
 		Label currentParent;
+		
+		menu.getChildren().add(new MinimalistAccountViewer(MainApplicationContexte.getInstance().getUser()));
 		for (int i = 0; i < 4; i++) {
 			currentNode = new JFXButton();
 			currentParent = new Label();
