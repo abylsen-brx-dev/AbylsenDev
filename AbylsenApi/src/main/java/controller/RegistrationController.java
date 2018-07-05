@@ -39,8 +39,8 @@ public class RegistrationController {
 		try {
 			if(request == null || request.account == null) {
 				CreateAccountResponse response = new CreateAccountResponse();
-				response.code = HttpStatus.STATUS_BAD_REQUEST;
-				response.status = "the request is empty";
+				response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+				response.message = "the request is empty";
 				return response;
 			}
 			
@@ -66,8 +66,8 @@ public class RegistrationController {
 		catch(Exception e) {
 			LoggerManager.getInstance().logError("[RegistrationController.create] !!!!! ERROR !!!!!", e);
 			CreateAccountResponse response = new CreateAccountResponse();
-			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
-			response.status = "Error, please retry later";
+			response.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+			response.message = "Error, please retry later";
 			
 			if(t != null && t.isActive())
 				t.commit();
@@ -86,8 +86,8 @@ public class RegistrationController {
 		try {
 			if(request == null) {
 				RegistrationResponse response = new  RegistrationResponse();
-				response.code = HttpStatus.STATUS_BAD_REQUEST;
-				response.status = "the request is empty";
+				response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+				response.message = "the request is empty";
 			}
 			
 			t = session.beginTransaction();
@@ -103,15 +103,15 @@ public class RegistrationController {
 							request.email, 
 							request.password, 
 							cxt.getClientInformation().getSecretKey(),
-							response.status));
+							response.message));
 			
 			return response;	
 		}
 		catch(Exception e) {
 			LoggerManager.getInstance().logError("[RegistrationController.register] !!!!! ERROR !!!!!", e);
 			RegistrationResponse response = new RegistrationResponse();
-			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
-			response.status = "Error, please retry later";
+			response.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+			response.message = "Error, please retry later";
 			
 			if(t != null && t.isActive())
 				t.commit();
@@ -126,8 +126,8 @@ public class RegistrationController {
 	public BaseResponse keepAlive(HttpServletResponse httpResponse, HttpContext cxt) {
 		BaseResponse response = new BaseResponse();
 		
-		response.code = HttpStatus.STATUS_OK;
-		response.status = "Done";
+		response.statusCode = HttpStatus.STATUS_OK;
+		response.message = "Done";
 		
 		try {
 			httpResponse.addHeader(
@@ -139,8 +139,8 @@ public class RegistrationController {
 							cxt.getUser().getPoste()));
 		} catch (UnsupportedEncodingException e) {
 			LoggerManager.getInstance().logError("[RegistrationController.keepAlive] !!!!! ERROR !!!!!", e);
-			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
-			response.status = "Error, try again later";
+			response.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+			response.message = "Error, try again later";
 		}
 		
 		return response;

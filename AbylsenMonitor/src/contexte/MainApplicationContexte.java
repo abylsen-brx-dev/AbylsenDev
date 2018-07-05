@@ -20,6 +20,7 @@ public class MainApplicationContexte {
 		//TODO : Here reload from files !!!
 		apiKey = "devApiKey123456";
 		token = "";
+		abylsenApiUrl = "http://localhost:8080/";
 	}
 	
 	private String token;
@@ -29,6 +30,8 @@ public class MainApplicationContexte {
 	private MainApp mainApp;
 	
 	private EmployeeDto user;
+	
+	private String abylsenApiUrl;
 	
 	public String getToken() {
 		return token;
@@ -62,6 +65,10 @@ public class MainApplicationContexte {
 		this.user = user;
 	}
 	
+	public String getAbylsenApiUrl() {
+		return abylsenApiUrl;
+	}
+	
 	public void manageHeaders(Headers headers) {
 		if(headers == null)
 			return;
@@ -71,4 +78,5 @@ public class MainApplicationContexte {
 		
 		token = headers.get(HttpHeaders.HEADER_TOKEN);
 	}
+
 }

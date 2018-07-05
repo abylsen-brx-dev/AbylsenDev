@@ -31,14 +31,14 @@ public class PersonController {
 			e.setPoste(cxt.getUser().getPoste());
 			
 			response.account = e;
-			response.status = "done";
-			response.code = HttpStatus.STATUS_OK;
+			response.statusCode = HttpStatus.STATUS_OK;
+			response.message = "done";
 			
 			return response;
 		} catch (Exception e) {
 			LoggerManager.getInstance().logError("[PersonController.GetInfoResponse] !!!!! ERROR !!!!!", e);
-			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
-			response.status = "Error, try again later";
+			response.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+			response.message = "Error, try again later";
 			return response;
 		}
 

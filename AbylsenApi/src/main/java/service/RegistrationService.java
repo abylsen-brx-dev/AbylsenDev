@@ -27,49 +27,49 @@ public class RegistrationService extends BaseService{
 		BaseResponse response = new BaseResponse();
 		
 		if(e.getEmail() == null || e.getEmail() == "" ) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "Email is empty";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "Email is empty";
 			return response;
 		}
 		
 		if(Employee.getEmployeeByEmail(session, e.getEmail()) != null) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "Email is already taken";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "Email is already taken";
 			return response;
 		}
 		
 		if(e.getPassword() == null || e.getPassword() == "" ) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "Password is empty";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "Password is empty";
 			return response;
 		}
 		
 		if(e.getFirstName() == null || e.getFirstName() == "" ) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "Firstname is empty";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "Firstname is empty";
 			return response;
 		}
 		
 		if(e.getLastName() == null || e.getLastName() == "" ) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "LastName is empty";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "LastName is empty";
 			return response;
 		}
 		
 		if(e.getPoste() == null || e.getPoste() == "" || !EmployeeEnums.isTypeExists(e.getPoste())) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "AccountType is empty or not valid";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "AccountType is empty or not valid";
 			return response;
 		}
 		
 		if(!Employee.addEmployee(session, e)) {
-			response.code = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
-			response.status = "Internal error, try later";
+			response.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+			response.message = "Internal error, try later";
 			return response;
 		}
 		
-		response.code = HttpStatus.STATUS_OK;
-		response.status = "creation done";
+		response.statusCode = HttpStatus.STATUS_OK;
+		response.message = "creation done";
 		return response;
 	}
 	
@@ -77,30 +77,30 @@ public class RegistrationService extends BaseService{
 		BaseResponse response = new BaseResponse();
 		
 		if(email == null || email == "") {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "email is empty";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "email is empty";
 		}
 		
 		if(password == null || password == "") {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "password is empty";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "password is empty";
 		}
 		
 		Employee e = Employee.getEmployeeByEmail(session, email);
 		if(e == null) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "No account found with this email";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "No account found with this email";
 			return response;
 		}
 		
 		if(!SecurityUtil.isPasswordValid(e.getPassword(), password)) {
-			response.code = HttpStatus.STATUS_BAD_REQUEST;
-			response.status = "Password is not valid";
+			response.statusCode = HttpStatus.STATUS_BAD_REQUEST;
+			response.message = "Password is not valid";
 			return response;
 		}
 
-		response.code = HttpStatus.STATUS_OK;
-		response.status = e.getPoste();
+		response.statusCode = HttpStatus.STATUS_OK;
+		response.message = e.getPoste();
 		
 		return response;
 	}

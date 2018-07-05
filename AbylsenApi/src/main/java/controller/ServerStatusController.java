@@ -16,8 +16,8 @@ public class ServerStatusController {
 	public BaseResponse  getStatus(){
 		BaseResponse response = new BaseResponse();
 		
-		response.code = HttpStatus.STATUS_OK;
-		response.status = "Server is ok !";
+		response.statusCode = HttpStatus.STATUS_OK;
+		response.message = "Server is ok !";
 		
 		return response;
 	}

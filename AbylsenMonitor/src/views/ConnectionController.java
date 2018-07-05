@@ -8,8 +8,8 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 
 import Dto.EmployeeDto;
-import RestClient.Util;
-import RestClient.AbylsenApi.IAbylsenApiRestClient;
+import RestClient.AbylsenApi.AbylsenApiClient;
+import RestClient.AbylsenApi.IAbylsenApiListener;
 import contexte.MainApplicationContexte;
 import controls.Toast;
 import enums.EmployeeEnums;
@@ -25,9 +25,7 @@ import model.BaseResponse;
 import model.CreateAccountRequest;
 import model.GetInfoResponse;
 import model.RegistrationRequest;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import okhttp3.Headers;
 
 public class ConnectionController extends BorderPane {
 
@@ -69,8 +67,6 @@ public class ConnectionController extends BorderPane {
 	
 	private VBox selectedBox;
 
-	private IAbylsenApiRestClient client;
-
 	public ConnectionController() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/ConnectionView.fxml"));
 		fxmlLoader.setRoot(this);
@@ -83,7 +79,6 @@ public class ConnectionController extends BorderPane {
 			selectedBox = connectionBox;
 			connectionBox.setVisible(false);
 			signinBox.setVisible(false);
-			client = Util.getAPIService();
 			
 			handleChangeAccountType();
 			keeAlive();
@@ -182,39 +177,39 @@ public class ConnectionController extends BorderPane {
 	}
 
 	public void keeAlive() {
-		client.keepAlive().enqueue(new Callback<BaseResponse>() {
+		AbylsenApiClient.getInstance().keepAlive(new IAbylsenApiListener() {
 			@Override
-			public void onResponse(Call<BaseResponse> arg0, Response<BaseResponse> arg1) {
-				BaseResponse responseTemp = arg1.body();
-				if (responseTemp == null) {
-					responseTemp = new BaseResponse();
-					responseTemp.status = "Error while contacting the server.";
-					responseTemp.code = arg1.code();
-				}
-				final BaseResponse br = responseTemp;
-
+			public void OnResponseAccepted(Object response, Headers headers) {
+				BaseResponse br = (BaseResponse)response;
+				
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						if (br.code == 200) {
-							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
+						if (br.statusCode == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(headers);
 							getInfo();
 						} else {
 							connectionBox.setVisible(true);
 							signinBox.setVisible(true);
+							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
 						}
 					}
 				});
 			}
-
+			
 			@Override
-			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
 						connectionBox.setVisible(true);
 						signinBox.setVisible(true);
-						new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						
+						BaseResponse br = (BaseResponse)response;
+						if(br == null)
+							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						else
+							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
 					}
 				});
 			}
@@ -225,47 +220,45 @@ public class ConnectionController extends BorderPane {
 		RegistrationRequest request = new RegistrationRequest();
 		request.email = email;
 		request.password = password;
-
-		client.register(request).enqueue(new Callback<BaseResponse>() {
+		
+		AbylsenApiClient.getInstance(). register(request, new IAbylsenApiListener() {
 			@Override
-			public void onResponse(Call<BaseResponse> arg0, Response<BaseResponse> arg1) {
-				BaseResponse responseTemp = arg1.body();
-				if (responseTemp == null) {
-					responseTemp = new BaseResponse();
-					responseTemp.status = "Error while contacting the server.";
-					responseTemp.code = arg1.code();
-				}
-				final BaseResponse br = responseTemp;
-
+			public void OnResponseAccepted(Object response, Headers headers) {
+				BaseResponse br = (BaseResponse)response;
+				
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						if (br.code == 200) {
-							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
+						if (br.statusCode == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(headers);
 							getInfo();
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
-							new Toast(toastContainer).show(String.valueOf(br.code) + " - " + br.status,
-									Toast.DURATION_LONG);
+							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
 						}
 					}
 				});
 			}
-
+			
 			@Override
-			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
 						showProgressBar(false);
 						wizz(selectedBox);
-						new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						
+						BaseResponse br = (BaseResponse)response;
+						if(br == null)
+							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						else
+							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
 					}
 				});
 			}
 		});
-
+		
 		showProgressBar(true);
 		selectedBox.setDisable(true);
 	}
@@ -280,81 +273,65 @@ public class ConnectionController extends BorderPane {
 		request.account.setPassword(password);
 		request.account.setPoste(accountType);
 		
-		client.create(request).enqueue(new Callback<BaseResponse>() {
+		AbylsenApiClient.getInstance().create(request, new IAbylsenApiListener() {
 			@Override
-			public void onResponse(Call<BaseResponse> arg0, Response<BaseResponse> arg1) {
-				BaseResponse responseTemp = arg1.body();
-				if (responseTemp == null) {
-					responseTemp = new BaseResponse();
-					responseTemp.status = "Error while contacting the server.";
-					responseTemp.code = arg1.code();
-				}
-				final BaseResponse br = responseTemp;
-
+			public void OnResponseAccepted(Object response, Headers headers) {
+				BaseResponse br = (BaseResponse)response;
+				
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showProgressBar(false);
-						selectedBox.setDisable(false);
-
-						if (br.code == 200) {
-							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
+						if (br.statusCode == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(headers);
 							getInfo();
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
-							new Toast(toastContainer).show(String.valueOf(br.code) + " - " + br.status,
-									Toast.DURATION_LONG);
+							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
 						}
 					}
 				});
 			}
-
+			
 			@Override
-			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
-
 					@Override
 					public void run() {
 						showProgressBar(false);
 						wizz(selectedBox);
-						new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						
+						BaseResponse br = (BaseResponse)response;
+						if(br == null)
+							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						else
+							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
 					}
 				});
 			}
 		});
-
+		
 		showProgressBar(true);
 		selectedBox.setDisable(true);
 	}
 
 	public void getInfo() {
-		client.getInfo().enqueue(new Callback<GetInfoResponse>() {
-			
+		AbylsenApiClient.getInstance().getInfo(new IAbylsenApiListener() {
 			@Override
-			public void onResponse(Call<GetInfoResponse> arg0, Response<GetInfoResponse> arg1) {
-				GetInfoResponse responseTemp = arg1.body();
-				if (responseTemp == null) {
-					responseTemp = new GetInfoResponse();
-					responseTemp.status = "Error while contacting the server.";
-					responseTemp.code = arg1.code();
-				}
-				final GetInfoResponse br = responseTemp;
-
+			public void OnResponseAccepted(Object response, Headers headers) {
+				BaseResponse br = (BaseResponse)response;
+				
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showProgressBar(false);
-						selectedBox.setDisable(false);
-
-						if (br.code == 200) {
-							MainApplicationContexte.getInstance().manageHeaders(arg1.headers());
-							MainApplicationContexte.getInstance().setUser(br.account);
+						if (br.statusCode == 200) {
+							MainApplicationContexte.getInstance().manageHeaders(headers);
+							MainApplicationContexte.getInstance().setUser(((GetInfoResponse)response).account);
 							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
-							new Toast(toastContainer).show(String.valueOf(br.code) + " - " + br.status,
+							new Toast(toastContainer).show(br.message,
 									Toast.DURATION_LONG);
 						}
 					}
@@ -362,14 +339,18 @@ public class ConnectionController extends BorderPane {
 			}
 			
 			@Override
-			public void onFailure(Call<GetInfoResponse> arg0, Throwable arg1) {
+			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
-
 					@Override
 					public void run() {
 						showProgressBar(false);
 						wizz(selectedBox);
-						new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						
+						BaseResponse br = (BaseResponse)response;
+						if(br == null)
+							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+						else
+							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
 					}
 				});
 			}
