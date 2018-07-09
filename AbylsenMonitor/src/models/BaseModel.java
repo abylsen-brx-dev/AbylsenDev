@@ -3,7 +3,6 @@ package models;
 public class BaseModel {
 	
 	public BaseModel() {
-		
 	}
 	
 	public void Save() {
@@ -12,9 +11,5 @@ public class BaseModel {
 	
 	public void Relaod() {
 		//Reload the instance.
-	}
-	
-	public String toJSON() {
-		return "";
 	}
 }
