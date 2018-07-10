@@ -43,6 +43,16 @@ public class Person {
 		this.lastName = p.getLastName();
 	}
 	
+	
+	public Object toDto() {
+		PersonDto dto = new PersonDto();
+		
+		dto.setId(id);
+		dto.setFirstName(firstName);
+		dto.setLastName(lastName);
+		
+		return dto;
+	}
 	public static Person getPerson(Session session, int id) {
 		try {
 			return session.get(Person.class, new Integer(id));

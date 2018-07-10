@@ -22,5 +22,6 @@
 	
 		<mapping resource="Person.hbm.xml"/>
 		<mapping resource="ClientInformation.hbm.xml"/>
+		<mapping resource="ConsultantToManager.hbm.xml"/>
 	</session-factory>
 </hibernate-configuration>

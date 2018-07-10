@@ -3,6 +3,7 @@ package contexte;
 import Dto.EmployeeDto;
 import application.MainApp;
 import enums.HttpHeaders;
+import models.EmployeeModel;
 import okhttp3.Headers;
 
 public class MainApplicationContexte {
@@ -29,7 +30,7 @@ public class MainApplicationContexte {
 
 	private MainApp mainApp;
 	
-	private EmployeeDto user;
+	private EmployeeModel user;
 	
 	private String abylsenApiUrl;
 	
@@ -57,12 +58,19 @@ public class MainApplicationContexte {
 		this.mainApp = mainApp;
 	}
 	
-	public EmployeeDto getUser() {
+	public EmployeeModel getUser() {
 		return user;
 	}
 	
-	public void setUser(EmployeeDto user) {
+	public void setUser(EmployeeModel user) {
 		this.user = user;
+	}
+	
+	public void setUser(EmployeeDto dto) {
+		if(user == null)
+			user = new EmployeeModel();
+		
+		user.fromDto(dto);;
 	}
 	
 	public String getAbylsenApiUrl() {

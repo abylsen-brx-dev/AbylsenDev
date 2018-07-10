@@ -12,4 +12,8 @@ public class BaseModel {
 	public void Relaod() {
 		//Reload the instance.
 	}
+	
+	public void fromDto(Object dto) {
+		
+	}
 }

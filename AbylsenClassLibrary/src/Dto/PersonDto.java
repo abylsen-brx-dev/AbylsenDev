@@ -1,18 +1,6 @@
 package Dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-
-
-@JsonTypeInfo(use = Id.CLASS,
-			include = JsonTypeInfo.As.PROPERTY,
-			property = "type")
-@JsonSubTypes({
-			@Type(value = EmployeeDto.class, name = "Emlpoyee"),
-			})
-public abstract class PersonDto {
+public class PersonDto {
 	private int id;
 	private String firstName;
 	private String lastName;

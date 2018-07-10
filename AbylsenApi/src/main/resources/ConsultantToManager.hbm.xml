@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping">
+<hibernate-mapping>
+	<class name="model.ConsultantToManager" table="CONSULTANT_TO_MANAGER">
+		<id name="id" column="ID">
+			<generator class="increment" />
+		</id>
+		
+		<property name="managerId" column="MANAGER_ID"/>
+	
+		<property name="consultantId" column="CONSULTANT_ID"/>
+		
+		<property name="from" column="FROM"/>
+		
+		<property name="to" column="TO"/>
+	</class>
+</hibernate-mapping>

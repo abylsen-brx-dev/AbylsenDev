@@ -10,6 +10,7 @@ import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 
 import contexte.MainApplicationContexte;
 import controls.MinimalistAccountViewer;
+import interfaces.IInitializable;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,6 +39,9 @@ public class RootController extends BorderPane {
 	@FXML
 	private JFXHamburger hamburger;
 
+	@FXML 
+	private BorderPane mainContainer;
+	
 	private Map<JFXButton, Parent> nodes;
 
 	public RootController() {
@@ -55,14 +59,11 @@ public class RootController extends BorderPane {
 			hamburger.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 				t.setRate(t.getRate() * -1);
 				t.play();
-				showMenu(!menuOpen);
+				showMenu(!menuOpen, 200);
 			});
 
+			showMenu(false, 0);
 			initDrawer();
-			
-			menu.setVisible(false);
-			menuOpen = false;
-			
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -71,60 +72,63 @@ public class RootController extends BorderPane {
 	private void initDrawer() {
 		nodes = new HashMap<JFXButton, Parent>();
 
-		JFXButton currentNode;
-		Label currentParent;
-		
 		menu.getChildren().add(new MinimalistAccountViewer(MainApplicationContexte.getInstance().getUser()));
-		for (int i = 0; i < 4; i++) {
-			currentNode = new JFXButton();
-			currentParent = new Label();
-			currentNode.setText("Menu " + String.valueOf(i));
-			currentParent.setText("MENU " + String.valueOf(i));
-			
-			currentNode.setPadding(new Insets(10));
-			currentNode.setOnAction(e -> {
-				if(e.getSource() instanceof JFXButton) {
-					selectMenu((JFXButton)e.getSource());
-				}
-			});
-			
-			nodes.put(currentNode, currentParent);
-			menu.getChildren().add(currentNode);
-			
-			if(i == 0)
-				selectMenu((JFXButton)nodes.keySet().toArray()[0]);
-		}
 		
+		ConsultantMangerController parent1 = new ConsultantMangerController();
+		JFXButton button1 = getMenuButton(parent1);
+		
+		nodes.put(button1, parent1);
+		
+		menu.getChildren().add(button1);
+		
+		selectMenu((JFXButton)nodes.keySet().toArray()[0]);
+		
+		menu.prefHeightProperty().bind(mainContainer.heightProperty());
 	}
 
-	private void showMenu(boolean visible) {
+	private JFXButton getMenuButton(IInitializable parent) {
+		JFXButton button;
+		
+		button = new JFXButton();
+		button.setText(parent.getTitle());
+		
+		button.setPadding(new Insets(10));
+		button.prefWidthProperty().bind(menu.widthProperty());
+		button.setOnAction(e -> {
+			if(e.getSource() instanceof JFXButton) {
+				selectMenu((JFXButton)e.getSource());
+			}
+		});
+		
+		return button;
+	}
+	
+	private void showMenu(boolean visible, int duration) {
 		TranslateTransition tt = new TranslateTransition();
-		tt.setDuration(Duration.millis(200));
+		tt.setDuration(Duration.millis(duration));
+		
 		tt.setNode(menu);
-
+		
 		if (!visible) {
-			tt.setFromX(0);
 			tt.setToX(-menu.getWidth());
+
 		} else {
-			tt.setFromX(-menu.getWidth());
 			tt.setToX(0);
 		}
 
-		tt.setOnFinished(e -> {
-			menuOpen = visible;
-		});
-		tt.play();
+		tt.setOnFinished(e -> menuOpen = visible);
 		
-		if(!menu.isVisible())
-			menu.setVisible(true);
+		tt.play();
 	}
 	
 	private void selectMenu(JFXButton source) {
-		for(JFXButton b : nodes.keySet()) {
-			if(b.equals(source))
-				makeButtonSelected(b);
-			else
-				makeButtonUnselected(b);
+		if(!title.getText().equals(source.getText().toUpperCase())) {
+			for(JFXButton b : nodes.keySet()) {
+				if(b.equals(source))
+					makeButtonSelected(b);
+				else
+					makeButtonUnselected(b);
+			}
 		}
 	}
 	
@@ -132,6 +136,8 @@ public class RootController extends BorderPane {
 		b.setTextFill(Color.GRAY);
 		b.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 		b.setOpacity(0.7);
+		
+		mainContainer.getChildren().remove(nodes.get(b));
 	}
 	
 	private void makeButtonSelected(JFXButton b) {
@@ -140,7 +146,9 @@ public class RootController extends BorderPane {
 		b.setOpacity(0.7);
 		
 		title.setText(b.getText().toUpperCase());
-		setCenter(nodes.get(b));
-		//nodes.get(b).init();
+		
+		mainContainer.setCenter(nodes.get(b));		
+		if(nodes.get(b) instanceof IInitializable)
+			((IInitializable)nodes.get(b)).init();
 	}
 }
