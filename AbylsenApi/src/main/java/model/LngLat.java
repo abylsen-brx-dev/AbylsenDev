@@ -16,18 +16,13 @@ public class LngLat {
 	private int id;
 
 	@Column(name="LNG")
-	private float lng;
+	private double lng;
 
 	@Column(name="LAT")
-	private float lat;
+	private double lat;
 
 	public LngLat() {
 		
-	}
-	
-	public LngLat(float lng, float lat) {
-		this.lng = lng;
-		this.lat = lat;
 	}
 	
 	public int getId() {
@@ -38,19 +33,19 @@ public class LngLat {
 		this.id = id;
 	}
 	
-	public float getLng() {
+	public double getLng() {
 		return lng;
 	}
 	
-	public void setLng(float lng) {
+	public void setLng(double lng) {
 		this.lng = lng;
 	}
 	
-	public float getLat() {
+	public double getLat() {
 		return lat;
 	}
 	
-	public void setLat(float lat) {
+	public void setLat(double lat) {
 		this.lat = lat;
 	}
 

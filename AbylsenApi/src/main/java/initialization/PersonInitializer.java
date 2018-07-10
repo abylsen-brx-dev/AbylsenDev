@@ -37,13 +37,16 @@ public class PersonInitializer implements IInitializer {
 		criteria.add(Restrictions.eq("firstName", firstName));
 		criteria.add(Restrictions.eq("lastName", lastName));
 		
-		Person p = new Person();
-
+		Person p = (Person)criteria.uniqueResult();
+		if(p != null)
+			return p;
+	
+		p = new Person();
+		
 		p.setFirstName(firstName);
 		p.setLastName(lastName);
 
-		if(criteria.uniqueResult() == null)
-			session.save(p);
+		session.save(p);
 		
 		return p;
 	}
@@ -59,7 +62,11 @@ public class PersonInitializer implements IInitializer {
 		criteria.add(Restrictions.eq("poste", poste));
 		
 		
-		Employee e = new Employee();
+		Employee e = (Employee)criteria.uniqueResult();
+		if(e != null)
+			return e;
+		
+		e = new Employee();
 
 		e.setFirstName(firstName);
 		e.setLastName(lastName);
@@ -67,8 +74,7 @@ public class PersonInitializer implements IInitializer {
 		e.setPassword(password);
 		e.setPoste(poste);
 
-		if(criteria.uniqueResult() == null)
-			session.save(e);
+		session.save(e);
 		
 		return e;
 	}

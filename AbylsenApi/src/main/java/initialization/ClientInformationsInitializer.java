@@ -23,15 +23,18 @@ public class ClientInformationsInitializer implements IInitializer {
 		criteria.add(Restrictions.eq("level", level));
 		criteria.add(Restrictions.eq("name", name));
 		
-		ClientInformation c = new ClientInformation();
-
+		ClientInformation c = (ClientInformation)criteria.uniqueResult();
+		if(c != null)
+			return c;
+		
+		c = new ClientInformation();
+		
 		c.setApikey(apiKey);
 		c.setSecretKey(secretKey);
 		c.setLevel(level);
 		c.setName(name);
 
-		if(criteria.uniqueResult() == null)
-			session.save(c);
+		session.save(c);
 		
 		return c;
 	}
