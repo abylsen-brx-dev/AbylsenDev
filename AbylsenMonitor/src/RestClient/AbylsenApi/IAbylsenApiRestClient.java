@@ -2,6 +2,7 @@ package RestClient.AbylsenApi;
 
 import model.BaseResponse;
 import model.CreateAccountRequest;
+import model.GetAllClientResponse;
 import model.GetAllConsultantsResponse;
 import model.GetInfoResponse;
 import model.RegistrationRequest;
@@ -26,4 +27,7 @@ public interface IAbylsenApiRestClient {
 	
 	@GET("/person/getAllConsultant/")
 	Call<GetAllConsultantsResponse> getAllConsultant();
+	
+	@GET("/client/getAll/")
+	Call<GetAllClientResponse> getAllClients();
 }

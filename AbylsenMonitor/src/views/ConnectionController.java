@@ -267,11 +267,11 @@ public class ConnectionController extends BorderPane {
 		CreateAccountRequest request = new CreateAccountRequest();
 		request.account = new EmployeeDto();
 
-		request.account.setEmail(email);
-		request.account.setFirstName(firstName);
-		request.account.setLastName(lastName);
-		request.account.setPassword(password);
-		request.account.setPoste(accountType);
+		request.account.email = email;
+		request.account.firstName = firstName;
+		request.account.lastName = lastName;
+		request.account.password = password;
+		request.account.poste = accountType;
 		
 		AbylsenApiClient.getInstance().create(request, new IAbylsenApiListener() {
 			@Override

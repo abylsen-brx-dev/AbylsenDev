@@ -48,8 +48,30 @@
 	-fx-background-color: white;
 }
 
+.jfx-list-view {
+	-fx-background-color: transparent;
+}
+
+.jfx-list-cell:selected{
+	-fx-background-color:#3d8c91;
+}
+
+.jfx-list-cell{
+	-fx-background-insets: 0.0;
+}
+
+.jfx-list-cell:hoover{
+	-fx-background-color: #1bd79c;
+}
+
+
+
 .rounded-image{
 	-fx-padding: 2;
 	-fx-background-color: black;
 	-fx-background-radius: 1000000;
+}
+
+.map-list-container {
+	-fx-background-color: rgba(200, 200, 200, .7);
 }

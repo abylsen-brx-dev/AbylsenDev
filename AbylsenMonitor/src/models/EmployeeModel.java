@@ -52,9 +52,9 @@ public class EmployeeModel extends PersonModel {
 		if(dto instanceof EmployeeDto) {
 			EmployeeDto e = (EmployeeDto)dto;
 			
-			password.set(e.getPassword());
-			email.set(e.getEmail());
-			poste.set(e.getPoste());
+			password.set(e.password);
+			email.set(e.email);
+			poste.set(e.poste);
 		}
 		
 		super.fromDto(dto);

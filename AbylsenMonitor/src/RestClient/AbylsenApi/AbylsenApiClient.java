@@ -11,6 +11,7 @@ import enums.HttpHeaders;
 import enums.HttpStatus;
 import model.BaseResponse;
 import model.CreateAccountRequest;
+import model.GetAllClientResponse;
 import model.GetAllConsultantsResponse;
 import model.GetInfoResponse;
 import model.RegistrationRequest;
@@ -199,6 +200,36 @@ public class AbylsenApiClient {
 
 			@Override
 			public void onFailure(Call<GetAllConsultantsResponse> arg0, Throwable arg1) {
+				BaseResponse br = new BaseResponse();
+				br.message = arg1.getMessage();
+				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+
+				listener.OnResponseRefused(br, null);
+			}
+		});
+	}
+	
+	public void getAllClients(IAbylsenApiListener listener) {
+		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
+
+		client.getAllClients().enqueue(new Callback<GetAllClientResponse>() {
+
+			@Override
+			public void onResponse(Call<GetAllClientResponse> arg0, retrofit2.Response<GetAllClientResponse> arg1) {
+				BaseResponse br = arg1.body();
+				if (br == null) {
+					br = ErrorApiUtils.parseError(arg1, retrofit);
+				}
+
+				if (br.statusCode == 200) {
+					listener.OnResponseAccepted(arg1.body(), arg1.headers());
+				} else {
+					listener.OnResponseRefused(br, arg1.headers());
+				}
+			}
+
+			@Override
+			public void onFailure(Call<GetAllClientResponse> arg0, Throwable arg1) {
 				BaseResponse br = new BaseResponse();
 				br.message = arg1.getMessage();
 				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;

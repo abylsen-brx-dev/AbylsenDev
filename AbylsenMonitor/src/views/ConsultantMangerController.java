@@ -147,8 +147,8 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 								list.clear();
 
 								for (EmployeeDto e : ((GetAllConsultantsResponse) response).consultants) {
-									list.add(new EmployeeTreeRow(e.getId(), e.getFirstName(), e.getLastName(),
-											e.getEmail()));
+									list.add(new EmployeeTreeRow(e.id, e.firstName, e.lastName,
+											e.email));
 								}
 
 								TreeItem<EmployeeTreeRow> root = new RecursiveTreeItem<EmployeeTreeRow>(list,

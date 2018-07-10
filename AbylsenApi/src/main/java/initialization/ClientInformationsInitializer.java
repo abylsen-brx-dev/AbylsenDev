@@ -14,7 +14,7 @@ public class ClientInformationsInitializer implements IInitializer {
 		createIfNotExists(session, "devApiKey123456", "devSecretKey", 0, "devClient");
 	}
 	
-	private ClientInformation createIfNotExists(Session session, String apiKey, String secretKey, int level, String name) {
+	public static ClientInformation createIfNotExists(Session session, String apiKey, String secretKey, int level, String name) {
 		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(ClientInformation.class);
 		

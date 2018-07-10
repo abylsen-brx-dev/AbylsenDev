@@ -29,15 +29,8 @@ public class PersonController {
 		GetInfoResponse response = new GetInfoResponse();
 
 		try {
-			EmployeeDto e = new EmployeeDto();
-
-			e.setId(cxt.getUser().getId());
-			e.setEmail(cxt.getUser().getEmail());
-			e.setPassword(cxt.getUser().getPassword());
-			e.setFirstName(cxt.getUser().getFirstName());
-			e.setLastName(cxt.getUser().getLastName());
-			e.setPoste(cxt.getUser().getPoste());
-
+			EmployeeDto e = (EmployeeDto) cxt.getUser().toDto();
+			
 			response.account = e;
 			response.statusCode = HttpStatus.STATUS_OK;
 			response.message = "done";

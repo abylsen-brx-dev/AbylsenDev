@@ -2,11 +2,14 @@ model\BaseRequest.class
 model\BaseResponse.class
 model\CreateAccountResponse.class
 model\GetAllConsultantsResponse.class
+Dto\MissionDto.class
 enums\EmployeeEnums.class
+model\GetAllClientResponse.class
 enums\HttpStatus.class
 model\CreateAccountRequest.class
 model\RegistrationRequest.class
 model\RegistrationResponse.class
+Dto\ClientDto.class
 Dto\PersonDto.class
 model\LinkToManagerRequest.class
 model\GetInfoResponse.class

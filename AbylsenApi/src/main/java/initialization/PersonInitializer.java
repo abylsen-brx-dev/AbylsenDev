@@ -30,7 +30,7 @@ public class PersonInitializer implements IInitializer {
 		createEmployeeIfNotExists(session, "Employee11", "Dev", "employee11.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
 	}
 
-	private Person createPersonIfNotExists(Session session, String firstName, String lastName) {
+	public static Person createPersonIfNotExists(Session session, String firstName, String lastName) {
 		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(Person.class);
 		
@@ -51,7 +51,7 @@ public class PersonInitializer implements IInitializer {
 		return p;
 	}
 	
-	private Employee createEmployeeIfNotExists(Session session, String firstName, String lastName, String email, String password, String poste) {
+	public static Employee createEmployeeIfNotExists(Session session, String firstName, String lastName, String email, String password, String poste) {
 		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(Employee.class);
 		

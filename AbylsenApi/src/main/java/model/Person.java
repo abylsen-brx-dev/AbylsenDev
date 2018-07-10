@@ -57,17 +57,20 @@ public class Person {
 	}
 	
 	public void fromDto(PersonDto p) {
-		this.id = (Integer) p.getId();
-		this.firstName = p.getFirstName();
-		this.lastName = p.getLastName();
+		if(p == null)
+			return;
+		
+		this.id = (Integer) p.id;
+		this.firstName = p.firstName;
+		this.lastName = p.lastName;
 	}
 	
 	public Object toDto() {
 		PersonDto dto = new PersonDto();
 		
-		dto.setId(id);
-		dto.setFirstName(firstName);
-		dto.setLastName(lastName);
+		dto.id = id;
+		dto.firstName = firstName;
+		dto.lastName = lastName;
 		
 		return dto;
 	}
@@ -76,7 +79,7 @@ public class Person {
 		try {
 			return session.get(Person.class, new Integer(id));
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert person : ", e);
+			LoggerManager.getInstance().logError("[Person.getPerson] Error while getting person : ", e);
 			return null;
 		}
 	}
@@ -88,7 +91,7 @@ public class Person {
 			list = session.createCriteria(Person.class).list();
 			return list;
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert person : ", e);
+			LoggerManager.getInstance().logError("[Person.getAll] Error while getting all persons : ", e);
 			return new ArrayList<Person>();
 		}
 	}
@@ -98,7 +101,7 @@ public class Person {
 			session.save(p);
 			return true;
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert person : ", e);
+			LoggerManager.getInstance().logError("[Person.addPerson] Error while inserting person : ", e);
 			return false;
 		}
 	}

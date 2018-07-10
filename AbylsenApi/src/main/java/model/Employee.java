@@ -87,10 +87,13 @@ public class Employee extends Person {
 	
 	@Override
 	public void fromDto(PersonDto e) {
+		if(e == null)
+			return;
+		
 		if(e instanceof EmployeeDto) {
-			this.email = ((EmployeeDto)e).getEmail();
-			this.password = ((EmployeeDto)e).getPassword();
-			this.poste = ((EmployeeDto)e).getPoste();
+			this.email = ((EmployeeDto)e).email;
+			this.password = ((EmployeeDto)e).password;
+			this.poste = ((EmployeeDto)e).poste;
 		}
 		
 		super.fromDto(e);
@@ -100,12 +103,12 @@ public class Employee extends Person {
 	public Object toDto() {
 		EmployeeDto dto = new EmployeeDto();
 		
-		dto.setId(getId());
-		dto.setFirstName(getFirstName());
-		dto.setLastName(getLastName());
-		dto.setEmail(email);
-		dto.setPassword(password);
-		dto.setPoste(poste);
+		dto.id = getId();
+		dto.firstName = getFirstName();
+		dto.lastName = getLastName();
+		dto.email = email;
+		dto.password = password;
+		dto.poste = poste;
 		
 		return dto;
 	}
@@ -126,7 +129,7 @@ public class Employee extends Person {
 			return (Employee) criteria.add(Restrictions.eq("email", email))
 			                             .uniqueResult();
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[Employee.getEmployee] Error while looking for employee : ", e);
+			LoggerManager.getInstance().logError("[Employee.getEmployeeByEmail] Error while looking for employee : ", e);
 			throw(e);
 		}
 	}
@@ -149,7 +152,7 @@ public class Employee extends Person {
 			Criteria criteria = session.createCriteria(Employee.class);
 			return criteria.add(Restrictions.eq("poste", poste)).list();
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[Employee.getAllEmployee] Error while getting all employees : ", e);
+			LoggerManager.getInstance().logError("[Employee.getAllEmployeeByPoste] Error while getting all employees by poste : ", e);
 			return new ArrayList<Employee>();
 		}
 	}
@@ -159,7 +162,7 @@ public class Employee extends Person {
 			session.save(p);
 			return true;
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[PersonService.addPerson] Error while insert employee : ", e);
+			LoggerManager.getInstance().logError("[Employee.addEmployee] Error while inserting employee : ", e);
 			return false;
 		}
 	}

@@ -118,7 +118,7 @@ public class ClientInformation {
 			
 			return true;
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[PersonService.addClientInformation] Error while insert ClientInformation : ", e);
+			LoggerManager.getInstance().logError("[ClientInformation.addClientInformation] Error while insert ClientInformation : ", e);
 			return false;
 		}
 	}

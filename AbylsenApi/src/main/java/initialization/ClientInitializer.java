@@ -20,7 +20,7 @@ public class ClientInitializer implements IInitializer {
 				createIfNotExists(session, 50.709436, 4.407755));
 	}
 
-	private Client createIfNotExists(Session session, String name, String address, LngLat position) {
+	public static Client createIfNotExists(Session session, String name, String address, LngLat position) {
 		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(Client.class);
 
@@ -43,7 +43,7 @@ public class ClientInitializer implements IInitializer {
 		return c;
 	}
 
-	private LngLat createIfNotExists(Session session, double lng, double lat) {
+	public static LngLat createIfNotExists(Session session, double lng, double lat) {
 		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(LngLat.class);
 

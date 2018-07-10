@@ -56,9 +56,9 @@ public class PersonModel extends BaseModel {
 		if(dto instanceof PersonDto) {
 			PersonDto p = (PersonDto)dto;
 			
-			firstName.set(p.getFirstName());
-			lastName.set(p.getLastName());
-			id.set(p.getId());
+			firstName.set(p.firstName);
+			lastName.set(p.lastName);
+			id.set(p.id);
 		}
 		
 		super.fromDto(dto);
