@@ -6,4 +6,5 @@ public interface IInitializable {
 	
 	void init();
 	
+	boolean isInit();
 }

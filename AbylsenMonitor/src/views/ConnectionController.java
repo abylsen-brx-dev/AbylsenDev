@@ -98,7 +98,7 @@ public class ConnectionController extends BorderPane {
 					signinPassword.getText(), 
 					signinFirstName.getText(),
 					signinLastName.getText(), 
-					signinAccountType.isSelected() ? EmployeeEnums.TYPE_CONSULTANT : EmployeeEnums.TYPE_MANAGER);
+					!signinAccountType.isSelected() ? EmployeeEnums.TYPE_CONSULTANT : EmployeeEnums.TYPE_MANAGER);
 		}
 	}
 

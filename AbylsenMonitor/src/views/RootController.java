@@ -76,12 +76,16 @@ public class RootController extends BorderPane {
 		
 		ConsultantMangerController parent1 = new ConsultantMangerController();
 		JFXButton button1 = getMenuButton(parent1);
-		
 		nodes.put(button1, parent1);
 		
+		MainDashboardController parent2 = new MainDashboardController();
+		JFXButton button2 = getMenuButton(parent2);
+		nodes.put(button2, parent2);
+
+		menu.getChildren().add(button2);
 		menu.getChildren().add(button1);
 		
-		selectMenu((JFXButton)nodes.keySet().toArray()[0]);
+		selectMenu(button2);
 		
 		menu.prefHeightProperty().bind(mainContainer.heightProperty());
 	}
