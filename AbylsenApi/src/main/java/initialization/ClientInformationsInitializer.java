@@ -25,10 +25,10 @@ public class ClientInformationsInitializer implements IInitializer {
 		
 		ClientInformation c = new ClientInformation();
 
-		c.setApikey("devApiKey123456");
-		c.setSecretKey("devSecretKey");
-		c.setLevel(0);
-		c.setName("devClient");
+		c.setApikey(apiKey);
+		c.setSecretKey(secretKey);
+		c.setLevel(level);
+		c.setName(name);
 
 		if(criteria.uniqueResult() == null)
 			session.save(c);

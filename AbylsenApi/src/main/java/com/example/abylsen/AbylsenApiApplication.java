@@ -24,6 +24,7 @@ public class AbylsenApiApplication extends WebMvcConfigurationSupport {
 	
 	public static void main(String[] args) {
 		LoggerManager.getInstance().logDebug("********* SERVER STARTING ***************");
+		
 		//First we init the DB.
 		InitializationEngine ie = new InitializationEngine();
 		ie.start();

@@ -17,6 +17,7 @@ public class InitializationEngine {
 		
 		initializers.add(new ClientInformationsInitializer());
 		initializers.add(new PersonInitializer());
+		initializers.add(new ClientInitializer());
 	}
 	
 	public void start() {

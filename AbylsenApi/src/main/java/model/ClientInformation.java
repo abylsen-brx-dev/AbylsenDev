@@ -3,17 +3,39 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 import Logging.LoggerManager;
 
+@Entity
+@Table(name="CLIENT_INFORMATIONS",
+		uniqueConstraints=@UniqueConstraint(columnNames={"APIKEY", "NAME"}))
 public class ClientInformation {
+	
+	@Id
+	@GeneratedValue
+	@Column(name="ID")
 	private Integer id;
+	
+	@Column(name="APIKEY")
 	private String apikey;
+
+	@Column(name="SECRETKEY")
 	private String secretKey;
+
+	@Column(name="NAME")
 	private String name;
+
+	@Column(name="LEVEL")
 	private int level;
 	
 	public Integer getId() {

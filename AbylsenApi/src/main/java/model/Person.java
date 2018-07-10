@@ -3,14 +3,33 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+
 import org.hibernate.Session;
 
 import Dto.PersonDto;
 import Logging.LoggerManager;
 
+@Entity
+@Table(name="PERSONS")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Person {
+	
+	@Id
+	@GeneratedValue
+	@Column(name="ID")
 	private Integer id;
+	
+	@Column(name="FIRSTNAME")
 	private String firstName;
+	
+	@Column(name="LASTNAME")
 	private String lastName;
 	
 	public Integer getId() {
@@ -43,7 +62,6 @@ public class Person {
 		this.lastName = p.getLastName();
 	}
 	
-	
 	public Object toDto() {
 		PersonDto dto = new PersonDto();
 		
@@ -53,6 +71,7 @@ public class Person {
 		
 		return dto;
 	}
+	
 	public static Person getPerson(Session session, int id) {
 		try {
 			return session.get(Person.class, new Integer(id));

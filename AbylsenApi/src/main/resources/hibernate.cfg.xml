@@ -12,16 +12,20 @@
 		<property name="connection.password"></property>
 	
 		<!-- 	Pool de connection interne -->
-		<property name="connection.pool_size">1</property>
+		<property name="connection.pool_size">100</property>
 	
 		<!-- 	SQL Dialect -->
 		<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
 		
 		<property name="hibernate.hbm2ddl.auto">update</property>		
-		<property name="show_sql">true</property>
+		<property name="show_sql">false</property>
 	
-		<mapping resource="Person.hbm.xml"/>
-		<mapping resource="ClientInformation.hbm.xml"/>
-		<mapping resource="ConsultantToManager.hbm.xml"/>
+		<mapping class="model.Client"/>
+		<mapping class="model.Person"/>
+		<mapping class="model.Employee"/>
+		<mapping class="model.ClientInformation"/>
+		<mapping class="model.LngLat"/>
+		<mapping class="model.Mission"/>
+		
 	</session-factory>
 </hibernate-configuration>

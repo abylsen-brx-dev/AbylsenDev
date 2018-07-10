@@ -3,6 +3,14 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -11,11 +19,31 @@ import Dto.EmployeeDto;
 import Dto.PersonDto;
 import Logging.LoggerManager;
 
+
+@Entity
+@Table(name="EMPLOYEES",
+		uniqueConstraints=@UniqueConstraint(columnNames={"EMAIL"}))
 public class Employee extends Person {
 	
+	@Column(name="EMAIL")
 	private String email;
+	
+	@Column(name="PASSWORD")
 	private String password;
+	
+	@Column(name="POSTE")
 	private String poste;
+	
+	@ManyToOne
+	@JoinColumn(name="MASTER_ID")
+	private Employee master;
+	
+	@Transient
+	private List<Employee> children;
+	
+	public Employee() {
+		children = new ArrayList<Employee>();
+	}
 	
 	public String getEmail() {
 		return email;
@@ -39,6 +67,22 @@ public class Employee extends Person {
 	
 	public void setPoste(String poste) {
 		this.poste = poste;
+	}
+	
+	public Employee getMaster() {
+		return master;
+	}
+
+	public void setMaster(Employee master) {
+		this.master = master;
+	}
+
+	public List<Employee> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Employee> children) {
+		this.children = children;
 	}
 	
 	@Override
@@ -65,6 +109,7 @@ public class Employee extends Person {
 		
 		return dto;
 	}
+	
 	public static Employee getEmployee(Session session, int id) {
 		try {
 			return session.get(Employee.class, new Integer(id));
@@ -118,4 +163,5 @@ public class Employee extends Person {
 			return false;
 		}
 	}
+
 }

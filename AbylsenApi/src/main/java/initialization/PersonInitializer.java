@@ -17,8 +17,17 @@ public class PersonInitializer implements IInitializer {
 		createPersonIfNotExists(session, "Person1", "Dev");
 		createPersonIfNotExists(session, "Person2", "Dev");
 
-		createEmployeeIfNotExists(session, "Employee1", "Dev", "employee1.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee2", "Dev", "employee2.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee1", "Dev", "employee1.dev@dev.com", "devPassword", EmployeeEnums.TYPE_MANAGER);
+		createEmployeeIfNotExists(session, "Employee2", "Dev", "employee2.dev@dev.com", "devPassword", EmployeeEnums.TYPE_MANAGER);
+		createEmployeeIfNotExists(session, "Employee3", "Dev", "employee3.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee4", "Dev", "employee4.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee5", "Dev", "employee5.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee6", "Dev", "employee6.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee7", "Dev", "employee7.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee8", "Dev", "employee8.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee9", "Dev", "employee9.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee10", "Dev", "employee10.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee11", "Dev", "employee11.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
 	}
 
 	private Person createPersonIfNotExists(Session session, String firstName, String lastName) {
