@@ -7,8 +7,20 @@
 	
 }
 
+.search-icon {
+	-fx-background-image: url('search_icon.png');
+	-fx-background-size: 100% 100%;
+	-fx-background-repeat: no-repeat no-repeat;
+	-fx-background-position: center;
+	
+}
+
 .drawer-contairner{
-	-fx-background-color: #e0e0e0;
+	-fx-background-color: #ffffff;
+}
+
+.drawer-second-container {
+	-fx-background-color: rgba(0, 0, 0, .5);
 }
 
 .connection-container{
@@ -73,5 +85,55 @@
 }
 
 .map-list-container {
-	-fx-background-color: rgba(200, 200, 200, .7);
+	-fx-background-color: rgba(150, 150, 150, .5);
+}
+
+.tree-table-view .scroll-bar:horizontal .track,
+.tree-table-view .scroll-bar:vertical .track,
+.jfx-list-view .scroll-bar:horizontal .track,
+.jfx-list-view .scroll-bar:vertical .track{
+	-fx-background-color:transparent;
+	-fx-border-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-border-radius:2em;
+}
+
+.tree-table-view .scroll-bar:horizontal .increment-button ,
+.tree-table-view .scroll-bar:horizontal .decrement-button ,
+.jfx-list-view .scroll-bar:horizontal .increment-button ,
+.jfx-list-view .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-padding:0 0 10 0;
+ 
+}
+ 
+/* The increment and decrement button CSS class of scrollbar */
+.tree-table-view .scroll-bar:vertical .increment-button ,
+.tree-table-view .scroll-bar:vertical .decrement-button ,
+.jfx-list-view .scroll-bar:vertical .increment-button ,
+.jfx-list-view .scroll-bar:vertical .decrement-button {
+ 
+    -fx-background-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-padding:0 10 0 0;
+ 
+}
+ 
+.tree-table-view  .scroll-bar .increment-arrow,
+.tree-table-view  .scroll-bar .decrement-arrow ,
+.jfx-list-view  .scroll-bar .increment-arrow,
+.jfx-list-view  .scroll-bar .decrement-arrow {
+	-fx-shape: " ";	
+	-fx-padding:0;
+}
+ 
+.tree-table-view .scroll-bar:horizontal .thumb,
+.tree-table-view .scroll-bar:vertical .thumb
+.jfx-list-view .scroll-bar:horizontal .thumb,
+.jfx-list-view .scroll-bar:vertical .thumb {
+    -fx-background-color:derive(black,90%);
+	-fx-background-insets: 2, 0, 0;
+	-fx-background-radius: 2em;
+ 
 }
