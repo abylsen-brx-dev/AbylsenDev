@@ -1,7 +1,10 @@
 package views;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
@@ -10,12 +13,14 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import Dto.EmployeeDto;
 import RestClient.AbylsenApi.AbylsenApiClient;
 import RestClient.AbylsenApi.IAbylsenApiListener;
+import enums.EmployeeEnums;
 import interfaces.IInitializable;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +31,9 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableColumn.CellDataFeatures;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
+import model.AddEmployeeRequest;
 import model.GetAllConsultantsResponse;
+import model.UpdateEmployeeRequest;
 import okhttp3.Headers;
 
 public class ConsultantMangerController extends AnchorPane implements IInitializable {
@@ -36,9 +43,34 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 	@FXML
 	private JFXTreeTableView<EmployeeTreeRow> treeview;
 
+	@FXML
+	private JFXTextField searchByNameInput;
+
+	@FXML
+	private JFXTextField searchByEmailInput;
+
+	@FXML
+	private JFXTextField firstNameTextField;
+
+	@FXML
+	private JFXTextField lastNameTextField;
+
+	@FXML
+	private JFXTextField emailTextField;
+
+	@FXML
+	private JFXTextField phoneNumberTextField;
+
+	@FXML
+	private JFXComboBox<String> posteComboBox;
+
 	private ObservableList<EmployeeTreeRow> list;
 
 	private boolean isInit;
+
+	private StringProperty byNameInput;
+
+	private StringProperty byEmailInput;
 
 	public ConsultantMangerController() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/ConsultantMangerView.fxml"));
@@ -51,30 +83,73 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 
 			isInit = false;
 			list = FXCollections.observableArrayList();
+
+			byNameInput = new SimpleStringProperty(null);
+			byEmailInput = new SimpleStringProperty(null);
+
+			byNameInput.bind(searchByNameInput.textProperty());
+			byEmailInput.bind(searchByEmailInput.textProperty());
+
+			posteComboBox.setItems(getPostes());
+
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 
 	class EmployeeTreeRow extends RecursiveTreeObject<EmployeeTreeRow> {
+
+		EmployeeDto e;
+
 		IntegerProperty id;
 		StringProperty firstName;
 		StringProperty lastName;
 		StringProperty email;
+		StringProperty poste;
+		StringProperty password;
 
-		public EmployeeTreeRow(int id, String firstName, String lastName, String email) {
-			this.id = new SimpleIntegerProperty(id);
-			this.firstName = new SimpleStringProperty(firstName);
-			this.lastName = new SimpleStringProperty(lastName);
-			this.email = new SimpleStringProperty(email);
+		public EmployeeTreeRow(EmployeeDto e) {
+			if (e == null)
+				e = new EmployeeDto();
+
+			this.e = e;
+
+			this.id = new SimpleIntegerProperty(this.e.id);
+			this.firstName = new SimpleStringProperty(this.e.firstName);
+			this.lastName = new SimpleStringProperty(this.e.lastName);
+			this.email = new SimpleStringProperty(this.e.email);
+			this.poste = new SimpleStringProperty(this.e.poste);
+			this.password = new SimpleStringProperty(this.e.password);
+		}
+
+		public void clear() {
+			id.set(e.id);
+			firstName.set(e.firstName);
+			lastName.set(e.lastName);
+			email.set(e.email);
+			poste.set(e.poste);
+			password.set(e.password);
+		}
+		
+		public EmployeeDto getNewDto() {
+			EmployeeDto result = new EmployeeDto();
+			
+			result.email = email.get();
+			result.firstName = firstName.get();
+			result.lastName = lastName.get();
+			result.id = id.get();
+			result.password = password.get();
+			result.poste = poste.get();
+			
+			return result;
 		}
 	}
 
 	@Override
 	public void init() {
-		if(isInit)
+		if (isInit)
 			return;
-		
+
 		JFXTreeTableColumn<EmployeeTreeRow, String> firstNameColumn = new JFXTreeTableColumn<EmployeeTreeRow, String>(
 				"First Name");
 		firstNameColumn.setCellValueFactory(
@@ -117,6 +192,30 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 					}
 				});
 
+		ChangeListener<String> listenner = new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				treeview.setPredicate(new Predicate<TreeItem<EmployeeTreeRow>>() {
+
+					@Override
+					public boolean test(TreeItem<EmployeeTreeRow> t) {
+
+						if ((byEmailInput.get() == null || byEmailInput.get().equals(""))
+								&& (byNameInput.get() == null || byNameInput.get().equals("")))
+							return true;
+
+						return t.getValue().lastName.getValue().contains(byNameInput.get())
+								&& t.getValue().email.getValue().contains(byEmailInput.get());
+					}
+				});
+
+			}
+		};
+
+		searchByNameInput.textProperty().addListener(listenner);
+		searchByEmailInput.textProperty().addListener(listenner);
+
 		treeview.getColumns().clear();
 
 		treeview.getColumns().add(firstNameColumn);
@@ -124,7 +223,21 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 		treeview.getColumns().add(emailColumn);
 
 		getAllConsultant();
-		
+
+		treeview.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<TreeItem<EmployeeTreeRow>>() {
+
+					public void changed(ObservableValue<? extends TreeItem<EmployeeTreeRow>> observable,
+							TreeItem<EmployeeTreeRow> oldValue, TreeItem<EmployeeTreeRow> newValue) {
+
+						if (oldValue == null)
+							setSelectedEmployee(newValue.getValue(), null);
+						else if (newValue == null)
+							setSelectedEmployee(null, oldValue.getValue());
+						else
+							setSelectedEmployee(newValue.getValue(), oldValue.getValue());
+					}
+				});
 		isInit = true;
 	}
 
@@ -147,8 +260,7 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 								list.clear();
 
 								for (EmployeeDto e : ((GetAllConsultantsResponse) response).consultants) {
-									list.add(new EmployeeTreeRow(e.id, e.firstName, e.lastName,
-											e.email));
+									list.add(new EmployeeTreeRow(e));
 								}
 
 								TreeItem<EmployeeTreeRow> root = new RecursiveTreeItem<EmployeeTreeRow>(list,
@@ -163,6 +275,21 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 		});
 	}
 
+	private void setSelectedEmployee(EmployeeTreeRow newRow, EmployeeTreeRow oldRow) {
+		if (oldRow != null) {
+			firstNameTextField.textProperty().unbindBidirectional(oldRow.firstName);
+			lastNameTextField.textProperty().unbindBidirectional(oldRow.lastName);
+			emailTextField.textProperty().unbindBidirectional(oldRow.email);
+			posteComboBox.valueProperty().unbindBidirectional(oldRow.poste);
+		}
+		if (newRow != null) {
+			firstNameTextField.textProperty().bindBidirectional(newRow.firstName);
+			lastNameTextField.textProperty().bindBidirectional(newRow.lastName);
+			emailTextField.textProperty().bindBidirectional(newRow.email);
+			posteComboBox.valueProperty().bindBidirectional(newRow.poste);
+		}
+	}
+
 	@Override
 	public String getTitle() {
 		return title;
@@ -171,5 +298,102 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 	@Override
 	public boolean isInit() {
 		return isInit;
+	}
+
+	private ObservableList<String> getPostes() {
+		ObservableList<String> result = FXCollections.observableArrayList();
+
+		for (String s : EmployeeEnums.POSTE_ARRAY) {
+			result.add(s);
+		}
+
+		return result;
+	}
+
+	@FXML
+	private void handleSaveEmployee() {
+		if(treeview.getSelectionModel() == null ||
+		   treeview.getSelectionModel().getSelectedItem() == null) {
+			EmployeeTreeRow row = new EmployeeTreeRow(null);
+			
+			row.id.set(-1);
+			row.firstName.set(firstNameTextField.textProperty().get());
+			row.lastName.set(lastNameTextField.textProperty().get());
+			row.email.set(emailTextField.textProperty().get());
+			row.poste.set(posteComboBox.valueProperty().get());
+			row.password.set("1234Abylsen");
+			
+			addEmployee(row);
+			return;
+		}
+		
+		EmployeeTreeRow e = treeview.getSelectionModel().getSelectedItem().getValue();
+		if (e == null)
+			return;
+
+		if (e.id.get() == 0) {
+			addEmployee(e);
+		} else {
+			updateEmployee(e);
+		}
+	}
+
+	@FXML
+	private void handleClearSelection() {
+		if (treeview.getSelectionModel().getSelectedItem() != null) {
+			setSelectedEmployee(new EmployeeTreeRow(null), treeview.getSelectionModel().getSelectedItem().getValue());
+			treeview.getSelectionModel().select(null);
+		}
+	}
+
+	@FXML
+	private void handlCancelEmployee() {
+		EmployeeTreeRow e = treeview.getSelectionModel().getSelectedItem().getValue();
+		if (e == null)
+			return;
+
+		e.clear();
+	}
+	
+	private void updateEmployee(EmployeeTreeRow e) {
+		if(e == null)
+			return;
+		
+		UpdateEmployeeRequest request = new UpdateEmployeeRequest();
+		request.employee = e.getNewDto();
+		
+		AbylsenApiClient.getInstance().UpdateEmployee(request, new IAbylsenApiListener() {
+			
+			@Override
+			public void OnResponseRefused(Object response, Headers headers) {
+				//TODO : show error;
+			}
+			
+			@Override
+			public void OnResponseAccepted(Object response, Headers headers) {
+				//Do nothing
+			}
+		});
+	}
+	
+	private void addEmployee(EmployeeTreeRow e) {
+		if(e == null)
+			return;
+		
+		AddEmployeeRequest request = new AddEmployeeRequest();
+		request.employee = e.getNewDto();
+		
+		AbylsenApiClient.getInstance().addEmployee(request, new IAbylsenApiListener() {
+			
+			@Override
+			public void OnResponseRefused(Object response, Headers headers) {
+				//TODO : show error;
+			}
+			
+			@Override
+			public void OnResponseAccepted(Object response, Headers headers) {
+				getAllConsultant();
+			}
+		});
 	}
 }

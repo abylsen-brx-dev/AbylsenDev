@@ -80,6 +80,7 @@ public class ConnectionController extends BorderPane {
 			connectionBox.setVisible(false);
 			signinBox.setVisible(false);
 			
+			
 			handleChangeAccountType();
 			keeAlive();
 		} catch (IOException exception) {

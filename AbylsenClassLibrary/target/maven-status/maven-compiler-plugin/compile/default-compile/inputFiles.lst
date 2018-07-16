@@ -2,6 +2,8 @@ C:\AbylsenDev\AbylsenClassLibrary\src\model\LinkToManagerRequest.java
 C:\AbylsenDev\AbylsenClassLibrary\src\model\GetAllConsultantsResponse.java
 C:\AbylsenDev\AbylsenClassLibrary\src\Dto\PersonDto.java
 C:\AbylsenDev\AbylsenClassLibrary\src\model\CreateAccountRequest.java
+C:\AbylsenDev\AbylsenClassLibrary\src\model\UpdateEmployeeRequest.java
+C:\AbylsenDev\AbylsenClassLibrary\src\model\AddEmployeeRequest.java
 C:\AbylsenDev\AbylsenClassLibrary\src\model\GetAllClientResponse.java
 C:\AbylsenDev\AbylsenClassLibrary\src\enums\EmployeeEnums.java
 C:\AbylsenDev\AbylsenClassLibrary\src\Dto\EmployeeDto.java

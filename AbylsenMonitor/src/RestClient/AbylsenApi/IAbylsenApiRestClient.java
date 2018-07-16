@@ -1,11 +1,6 @@
 package RestClient.AbylsenApi;
 
-import model.BaseResponse;
-import model.CreateAccountRequest;
-import model.GetAllClientResponse;
-import model.GetAllConsultantsResponse;
-import model.GetInfoResponse;
-import model.RegistrationRequest;
+import model.*;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -30,4 +25,10 @@ public interface IAbylsenApiRestClient {
 	
 	@GET("/client/getAll/")
 	Call<GetAllClientResponse> getAllClients();
+	
+	@POST("/person/addEmployee/")
+	Call<BaseResponse> addEmployee(@Body AddEmployeeRequest request);
+	
+	@POST("/person/updateEmployee/")
+	Call<BaseResponse> updateEmployee(@Body UpdateEmployeeRequest request);
 }

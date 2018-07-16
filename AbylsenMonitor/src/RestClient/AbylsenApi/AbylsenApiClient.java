@@ -9,12 +9,7 @@ import RestClient.ErrorApiUtils;
 import contexte.MainApplicationContexte;
 import enums.HttpHeaders;
 import enums.HttpStatus;
-import model.BaseResponse;
-import model.CreateAccountRequest;
-import model.GetAllClientResponse;
-import model.GetAllConsultantsResponse;
-import model.GetInfoResponse;
-import model.RegistrationRequest;
+import model.*;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -230,6 +225,66 @@ public class AbylsenApiClient {
 
 			@Override
 			public void onFailure(Call<GetAllClientResponse> arg0, Throwable arg1) {
+				BaseResponse br = new BaseResponse();
+				br.message = arg1.getMessage();
+				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+
+				listener.OnResponseRefused(br, null);
+			}
+		});
+	}
+	
+	public void addEmployee(AddEmployeeRequest request, IAbylsenApiListener listener) {
+		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
+
+		client.addEmployee(request).enqueue(new Callback<BaseResponse>() {
+
+			@Override
+			public void onResponse(Call<BaseResponse> arg0, retrofit2.Response<BaseResponse> arg1) {
+				BaseResponse br = arg1.body();
+				if (br == null) {
+					br = ErrorApiUtils.parseError(arg1, retrofit);
+				}
+
+				if (br.statusCode == 200) {
+					listener.OnResponseAccepted(arg1.body(), arg1.headers());
+				} else {
+					listener.OnResponseRefused(br, arg1.headers());
+				}
+			}
+
+			@Override
+			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+				BaseResponse br = new BaseResponse();
+				br.message = arg1.getMessage();
+				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+
+				listener.OnResponseRefused(br, null);
+			}
+		});
+	}
+	
+	public void UpdateEmployee(UpdateEmployeeRequest request, IAbylsenApiListener listener) {
+		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
+
+		client.updateEmployee(request).enqueue(new Callback<BaseResponse>() {
+
+			@Override
+			public void onResponse(Call<BaseResponse> arg0, retrofit2.Response<BaseResponse> arg1) {
+				BaseResponse br = arg1.body();
+				if (br == null) {
+					br = ErrorApiUtils.parseError(arg1, retrofit);
+				}
+
+				if (br.statusCode == 200) {
+					listener.OnResponseAccepted(arg1.body(), arg1.headers());
+				} else {
+					listener.OnResponseRefused(br, arg1.headers());
+				}
+			}
+
+			@Override
+			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
 				BaseResponse br = new BaseResponse();
 				br.message = arg1.getMessage();
 				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;

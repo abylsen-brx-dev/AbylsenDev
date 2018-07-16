@@ -1,29 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import com.lynden.gmapsfx.GoogleMapView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <fx:root stylesheets="@../resources/MainTheme.css" type="AnchorPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-       <GoogleMapView fx:id="googleMapView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <StackPane styleClass="map-list-container" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="100.0">
+	<children>
+		<GoogleMapView fx:id="googleMapView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+		<StackPane styleClass="map-list-container" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="100.0">
+			<children>
+				<JFXListView fx:id="clientList" prefWidth="200.0" verticalGap="10.0">
+					<StackPane.margin>
+						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+					</StackPane.margin>
+				</JFXListView>
+			</children>
+		</StackPane>
+		<StackPane styleClass="map-list-container" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0">
+			<children>
+				<JFXListView fx:id="employeeList" prefWidth="200.0" verticalGap="10.0">
+					<StackPane.margin>
+						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+					</StackPane.margin>
+				</JFXListView>
+			</children>
+		</StackPane>
+		<BorderPane fx:id="sendMessagePane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0">
+			<center>
+				<VBox styleClass="map-list-container" BorderPane.alignment="CENTER">
+					<children>
+                  <Pane styleClass="connection-container2">
+                     <children>
+      						<JFXButton fx:id="messageShowButton" alignment="CENTER" contentDisplay="CENTER" onAction="#handleMessagePanelShow" text="People" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </Pane>
+						<JFXListView fx:id="CCContainer" editable="true" verticalGap="10.0" />
+					</children>
+				</VBox>
+			</center>
+		</BorderPane>
+      <VBox layoutX="300.0" layoutY="40.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="40.0">
          <children>
-            <JFXListView fx:id="clientList" prefWidth="200.0" verticalGap="10.0">
-               <StackPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </StackPane.margin></JFXListView>
+            <AnchorPane styleClass="map-list-container">
+               <children>
+                  <JFXTextField fx:id="addressSearchTextField" focusColor="#8fa7ee" promptText="Search/Start..." unFocusColor="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </JFXTextField>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="10.0" layoutY="10.0" styleClass="map-list-container">
+               <children>
+                  <JFXTextField fx:id="addressToTextField" focusColor="#8fa7ee" promptText="Destination..." unFocusColor="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </JFXTextField>
+                  <JFXButton onAction="#handleSearchButton" styleClass="search-icon" text="      " textFill="WHITE" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="2.0" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </AnchorPane>
          </children>
-      </StackPane>
-      <StackPane styleClass="map-list-container" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0">
-         <children>
-            <JFXListView fx:id="employeeList" prefWidth="200.0" verticalGap="10.0">
-               <StackPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </StackPane.margin>
-            </JFXListView>
-         </children></StackPane>
-   </children>
+      </VBox>
+	</children>
 </fx:root>
