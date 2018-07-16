@@ -1,8 +1,10 @@
 package enums;
 
+
 public class EmployeeEnums {
 	public static final String TYPE_CONSULTANT = "Consultant";
 	public static final String TYPE_MANAGER = "Manager";
+	public static final String[] POSTE_ARRAY =  { TYPE_CONSULTANT, TYPE_MANAGER };
 	
 	public static boolean isTypeExists(String type) {
 		return type.equals(TYPE_CONSULTANT) || 
