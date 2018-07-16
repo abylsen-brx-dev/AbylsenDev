@@ -10,7 +10,9 @@ import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 
 import contexte.MainApplicationContexte;
 import controls.MinimalistAccountViewer;
+import controls.Toast;
 import interfaces.IInitializable;
+import interfaces.IView;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,11 +25,12 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-public class RootController extends BorderPane {
+public class RootController extends BorderPane implements IView {
 
 	@FXML
 	private Label title;
@@ -44,6 +47,9 @@ public class RootController extends BorderPane {
 	@FXML
 	private Pane drawerHandleContainer;
 
+	@FXML
+	private VBox toastContainer;
+	
 	private boolean menuOpen;
 
 	private Map<JFXButton, Parent> nodes;
@@ -169,5 +175,14 @@ public class RootController extends BorderPane {
 		mainContainer.setCenter(nodes.get(b));
 		if (nodes.get(b) instanceof IInitializable)
 			((IInitializable) nodes.get(b)).init();
+	}
+	
+	public void DisplayToast(String msg, int duration) {
+		new Toast(toastContainer).show(msg, duration);
+	}
+
+	@Override
+	public VBox getToastContainer() {
+		return toastContainer;
 	}
 }

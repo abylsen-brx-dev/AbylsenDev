@@ -1,26 +1,31 @@
 package application;
 
 import contexte.MainApplicationContexte;
+import controls.Toast;
+import interfaces.IView;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import views.ConnectionController;
 
 public class MainApp extends Application {
 	
-	private Parent current;
-	private Parent previous;
+	private IView current;
+	private IView previous;
 	private Stage stage;
 	private Scene oldScene;
+	private VBox toastContainer;
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
 			MainApplicationContexte.getInstance().setMainApp(this);
 			
-			this.stage = primaryStage;
+			stage = primaryStage;
 			stage.setTitle("Abyslen monitor");
-			stage.setScene(new Scene(new ConnectionController()));
+			navigateTo(new ConnectionController());
 			stage.setMaximized(true);
 			stage.show();
 			
@@ -33,15 +38,20 @@ public class MainApp extends Application {
 		launch(args);
 	}
 	
-	public void navigateTo(Parent p) {
+	public void navigateTo(IView p) {
 		if(p == null)
 			return;
 		
 		previous = current;
 		current = p;
 		
+		this.toastContainer = p.getToastContainer();
+		
 		oldScene = stage.getScene();
-		stage.setScene(new Scene(current, oldScene.getWidth(), oldScene.getHeight()));
+		if(oldScene == null)
+			stage.setScene(new Scene((Parent)current));
+		else
+			stage.setScene(new Scene((Parent)current, oldScene.getWidth(), oldScene.getHeight()));
 	}
 	
 	public void goBack() {
@@ -51,7 +61,13 @@ public class MainApp extends Application {
 		current = previous;
 		previous = null;
 		
+		this.toastContainer = current.getToastContainer();
+		
 		oldScene = stage.getScene();
-		stage.setScene(new Scene(current, oldScene.getWidth(), oldScene.getHeight()));
+		stage.setScene(new Scene((Parent)current, oldScene.getWidth(), oldScene.getHeight()));
+	}
+	
+	public void displayToast(String msg, double duration) {
+		new Toast(toastContainer).show(msg, duration);
 	}
 }

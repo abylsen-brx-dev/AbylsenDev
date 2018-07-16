@@ -30,6 +30,9 @@ public class Toast extends Label {
 	}
 
 	public void show(String msg, double duration) {
+		if(parent == null)
+			return;
+		
 		parent.getChildren().add(this);
 		this.setText(msg);
 		timer = new Timer();

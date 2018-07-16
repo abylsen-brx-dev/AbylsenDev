@@ -13,6 +13,7 @@ import RestClient.AbylsenApi.IAbylsenApiListener;
 import contexte.MainApplicationContexte;
 import controls.Toast;
 import enums.EmployeeEnums;
+import interfaces.IView;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -27,7 +28,7 @@ import model.GetInfoResponse;
 import model.RegistrationRequest;
 import okhttp3.Headers;
 
-public class ConnectionController extends BorderPane {
+public class ConnectionController extends BorderPane implements IView {
 
 	@FXML
 	private VBox connectionBox;
@@ -64,7 +65,7 @@ public class ConnectionController extends BorderPane {
 
 	@FXML
 	private JFXToggleButton signinAccountType;
-	
+
 	private VBox selectedBox;
 
 	public ConnectionController() {
@@ -79,8 +80,7 @@ public class ConnectionController extends BorderPane {
 			selectedBox = connectionBox;
 			connectionBox.setVisible(false);
 			signinBox.setVisible(false);
-			
-			
+
 			handleChangeAccountType();
 			keeAlive();
 		} catch (IOException exception) {
@@ -94,11 +94,7 @@ public class ConnectionController extends BorderPane {
 			register(loginEmail.getText(), loginPassword.getText());
 		}
 		if (selectedBox == signinBox) {
-			create(
-					signinEmail.getText(), 
-					signinPassword.getText(), 
-					signinFirstName.getText(),
-					signinLastName.getText(), 
+			create(signinEmail.getText(), signinPassword.getText(), signinFirstName.getText(), signinLastName.getText(),
 					!signinAccountType.isSelected() ? EmployeeEnums.TYPE_CONSULTANT : EmployeeEnums.TYPE_MANAGER);
 		}
 	}
@@ -117,12 +113,12 @@ public class ConnectionController extends BorderPane {
 
 	@FXML
 	private void handleChangeAccountType() {
-		if(signinAccountType.isSelected())
+		if (signinAccountType.isSelected())
 			signinAccountType.setText("Manager");
 		else
 			signinAccountType.setText("Consultant");
 	}
-	
+
 	private void wizz(Node n) {
 		n.setDisable(true);
 		TranslateTransition tt = new TranslateTransition();
@@ -181,8 +177,8 @@ public class ConnectionController extends BorderPane {
 		AbylsenApiClient.getInstance().keepAlive(new IAbylsenApiListener() {
 			@Override
 			public void OnResponseAccepted(Object response, Headers headers) {
-				BaseResponse br = (BaseResponse)response;
-				
+				BaseResponse br = (BaseResponse) response;
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
@@ -192,12 +188,13 @@ public class ConnectionController extends BorderPane {
 						} else {
 							connectionBox.setVisible(true);
 							signinBox.setVisible(true);
-							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
 						}
 					}
 				});
 			}
-			
+
 			@Override
 			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
@@ -205,28 +202,30 @@ public class ConnectionController extends BorderPane {
 					public void run() {
 						connectionBox.setVisible(true);
 						signinBox.setVisible(true);
-						
-						BaseResponse br = (BaseResponse)response;
-						if(br == null)
-							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+
+						BaseResponse br = (BaseResponse) response;
+						if (br == null)
+							MainApplicationContexte.getInstance().getMainApp().displayToast("Server not working",
+									Toast.DURATION_LONG);
 						else
-							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
 					}
 				});
 			}
 		});
 	}
-	
+
 	public void register(String email, String password) {
 		RegistrationRequest request = new RegistrationRequest();
 		request.email = email;
 		request.password = password;
-		
-		AbylsenApiClient.getInstance(). register(request, new IAbylsenApiListener() {
+
+		AbylsenApiClient.getInstance().register(request, new IAbylsenApiListener() {
 			@Override
 			public void OnResponseAccepted(Object response, Headers headers) {
-				BaseResponse br = (BaseResponse)response;
-				
+				BaseResponse br = (BaseResponse) response;
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
@@ -236,12 +235,13 @@ public class ConnectionController extends BorderPane {
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
-							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
 						}
 					}
 				});
 			}
-			
+
 			@Override
 			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
@@ -249,17 +249,19 @@ public class ConnectionController extends BorderPane {
 					public void run() {
 						showProgressBar(false);
 						wizz(selectedBox);
-						
-						BaseResponse br = (BaseResponse)response;
-						if(br == null)
-							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+
+						BaseResponse br = (BaseResponse) response;
+						if (br == null)
+							MainApplicationContexte.getInstance().getMainApp().displayToast("Server not working",
+									Toast.DURATION_LONG);
 						else
-							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
 					}
 				});
 			}
 		});
-		
+
 		showProgressBar(true);
 		selectedBox.setDisable(true);
 	}
@@ -273,12 +275,12 @@ public class ConnectionController extends BorderPane {
 		request.account.lastName = lastName;
 		request.account.password = password;
 		request.account.poste = accountType;
-		
+
 		AbylsenApiClient.getInstance().create(request, new IAbylsenApiListener() {
 			@Override
 			public void OnResponseAccepted(Object response, Headers headers) {
-				BaseResponse br = (BaseResponse)response;
-				
+				BaseResponse br = (BaseResponse) response;
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
@@ -288,12 +290,13 @@ public class ConnectionController extends BorderPane {
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
-							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
 						}
 					}
 				});
 			}
-			
+
 			@Override
 			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
@@ -301,17 +304,19 @@ public class ConnectionController extends BorderPane {
 					public void run() {
 						showProgressBar(false);
 						wizz(selectedBox);
-						
-						BaseResponse br = (BaseResponse)response;
-						if(br == null)
-							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+
+						BaseResponse br = (BaseResponse) response;
+						if (br == null)
+							MainApplicationContexte.getInstance().getMainApp().displayToast("Server not working",
+									Toast.DURATION_LONG);
 						else
-							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
 					}
 				});
 			}
 		});
-		
+
 		showProgressBar(true);
 		selectedBox.setDisable(true);
 	}
@@ -320,25 +325,25 @@ public class ConnectionController extends BorderPane {
 		AbylsenApiClient.getInstance().getInfo(new IAbylsenApiListener() {
 			@Override
 			public void OnResponseAccepted(Object response, Headers headers) {
-				BaseResponse br = (BaseResponse)response;
-				
+				BaseResponse br = (BaseResponse) response;
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
 						if (br.statusCode == 200) {
 							MainApplicationContexte.getInstance().manageHeaders(headers);
-							MainApplicationContexte.getInstance().setUser(((GetInfoResponse)response).account);
+							MainApplicationContexte.getInstance().setUser(((GetInfoResponse) response).account);
 							MainApplicationContexte.getInstance().getMainApp().navigateTo(new RootController());
 						} else {
 							showProgressBar(false);
 							wizz(selectedBox);
-							new Toast(toastContainer).show(br.message,
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
 									Toast.DURATION_LONG);
 						}
 					}
 				});
 			}
-			
+
 			@Override
 			public void OnResponseRefused(Object response, Headers headers) {
 				Platform.runLater(new Runnable() {
@@ -346,20 +351,27 @@ public class ConnectionController extends BorderPane {
 					public void run() {
 						showProgressBar(false);
 						wizz(selectedBox);
-						
-						BaseResponse br = (BaseResponse)response;
-						if(br == null)
-							new Toast(toastContainer).show("Server not working", Toast.DURATION_LONG);
+
+						BaseResponse br = (BaseResponse) response;
+						if (br == null)
+							MainApplicationContexte.getInstance().getMainApp().displayToast("Server not working",
+									Toast.DURATION_LONG);
 						else
-							new Toast(toastContainer).show(br.message, Toast.DURATION_LONG);
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
 					}
 				});
 			}
 		});
 	}
-	
+
 	private void showProgressBar(boolean visible) {
 		progressBarLogin.setVisible(visible);
 		progressBarSignin.setVisible(visible);
+	}
+
+	@Override
+	public VBox getToastContainer() {
+		return toastContainer;
 	}
 }

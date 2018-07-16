@@ -13,6 +13,8 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import Dto.EmployeeDto;
 import RestClient.AbylsenApi.AbylsenApiClient;
 import RestClient.AbylsenApi.IAbylsenApiListener;
+import contexte.MainApplicationContexte;
+import controls.Toast;
 import enums.EmployeeEnums;
 import interfaces.IInitializable;
 import javafx.application.Platform;
@@ -32,6 +34,7 @@ import javafx.scene.control.TreeTableColumn.CellDataFeatures;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import model.AddEmployeeRequest;
+import model.BaseResponse;
 import model.GetAllConsultantsResponse;
 import model.UpdateEmployeeRequest;
 import okhttp3.Headers;
@@ -130,17 +133,17 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			poste.set(e.poste);
 			password.set(e.password);
 		}
-		
+
 		public EmployeeDto getNewDto() {
 			EmployeeDto result = new EmployeeDto();
-			
+
 			result.email = email.get();
 			result.firstName = firstName.get();
 			result.lastName = lastName.get();
 			result.id = id.get();
 			result.password = password.get();
 			result.poste = poste.get();
-			
+
 			return result;
 		}
 	}
@@ -312,21 +315,20 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 
 	@FXML
 	private void handleSaveEmployee() {
-		if(treeview.getSelectionModel() == null ||
-		   treeview.getSelectionModel().getSelectedItem() == null) {
+		if (treeview.getSelectionModel() == null || treeview.getSelectionModel().getSelectedItem() == null) {
 			EmployeeTreeRow row = new EmployeeTreeRow(null);
-			
+
 			row.id.set(-1);
 			row.firstName.set(firstNameTextField.textProperty().get());
 			row.lastName.set(lastNameTextField.textProperty().get());
 			row.email.set(emailTextField.textProperty().get());
 			row.poste.set(posteComboBox.valueProperty().get());
 			row.password.set("1234Abylsen");
-			
+
 			addEmployee(row);
 			return;
 		}
-		
+
 		EmployeeTreeRow e = treeview.getSelectionModel().getSelectedItem().getValue();
 		if (e == null)
 			return;
@@ -354,45 +356,86 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 
 		e.clear();
 	}
-	
+
 	private void updateEmployee(EmployeeTreeRow e) {
-		if(e == null)
+		if (e == null)
 			return;
-		
+
 		UpdateEmployeeRequest request = new UpdateEmployeeRequest();
 		request.employee = e.getNewDto();
-		
+
 		AbylsenApiClient.getInstance().UpdateEmployee(request, new IAbylsenApiListener() {
-			
+
 			@Override
 			public void OnResponseRefused(Object response, Headers headers) {
-				//TODO : show error;
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						BaseResponse br = (BaseResponse) response;
+						if (br == null)
+							MainApplicationContexte.getInstance().getMainApp().displayToast("Server not working",
+									Toast.DURATION_LONG);
+						else
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
+					}
+				});
 			}
-			
+
 			@Override
 			public void OnResponseAccepted(Object response, Headers headers) {
-				//Do nothing
+				BaseResponse br = (BaseResponse) response;
+
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+								Toast.DURATION_LONG);
+					}
+				});
 			}
 		});
 	}
-	
+
 	private void addEmployee(EmployeeTreeRow e) {
-		if(e == null)
+		if (e == null)
 			return;
-		
+
 		AddEmployeeRequest request = new AddEmployeeRequest();
 		request.employee = e.getNewDto();
-		
+
 		AbylsenApiClient.getInstance().addEmployee(request, new IAbylsenApiListener() {
-			
 			@Override
 			public void OnResponseRefused(Object response, Headers headers) {
-				//TODO : show error;
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						BaseResponse br = (BaseResponse) response;
+						if (br == null)
+							MainApplicationContexte.getInstance().getMainApp().displayToast("Server not working",
+									Toast.DURATION_LONG);
+						else
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
+					}
+				});
 			}
-			
+
 			@Override
 			public void OnResponseAccepted(Object response, Headers headers) {
-				getAllConsultant();
+				BaseResponse br = (BaseResponse) response;
+
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+								Toast.DURATION_LONG);
+						
+						if(br.statusCode == 200) {
+							getAllConsultant();
+						}
+					}
+				});
 			}
 		});
 	}
