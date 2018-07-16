@@ -1,16 +1,22 @@
 package views;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.function.Predicate;
 
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 
+import Dto.ClientDto;
 import Dto.EmployeeDto;
+import Dto.MissionDto;
 import RestClient.AbylsenApi.AbylsenApiClient;
 import RestClient.AbylsenApi.IAbylsenApiListener;
 import contexte.MainApplicationContexte;
@@ -19,7 +25,9 @@ import enums.EmployeeEnums;
 import interfaces.IInitializable;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -36,6 +44,8 @@ import javafx.util.Callback;
 import model.AddEmployeeRequest;
 import model.BaseResponse;
 import model.GetAllConsultantsResponse;
+import model.GetMissionsByConsultantRequest;
+import model.GetMissionsResponse;
 import model.UpdateEmployeeRequest;
 import okhttp3.Headers;
 
@@ -67,7 +77,24 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 	@FXML
 	private JFXComboBox<String> posteComboBox;
 
-	private ObservableList<EmployeeTreeRow> list;
+	@FXML
+	private JFXTreeTableView<MissionTreeRow> missionsView;
+
+	@FXML
+	private JFXTextField missionNameTextField;
+
+	@FXML
+	private JFXTextField missionDescriptionTextField;
+
+	@FXML
+	private JFXDatePicker missionstartDate;
+
+	@FXML
+	private JFXDatePicker missionEndDate;
+
+	private ObservableList<EmployeeTreeRow> employeelist;
+
+	private ObservableList<MissionTreeRow> missionList;
 
 	private boolean isInit;
 
@@ -85,7 +112,9 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			fxmlLoader.load();
 
 			isInit = false;
-			list = FXCollections.observableArrayList();
+
+			employeelist = FXCollections.observableArrayList();
+			missionList = FXCollections.observableArrayList();
 
 			byNameInput = new SimpleStringProperty(null);
 			byEmailInput = new SimpleStringProperty(null);
@@ -148,6 +177,59 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 		}
 	}
 
+	class MissionTreeRow extends RecursiveTreeObject<MissionTreeRow> {
+
+		MissionDto m;
+
+		IntegerProperty id;
+		StringProperty name;
+		StringProperty desc;
+		ObjectProperty<EmployeeDto> consultant;
+		ObjectProperty<LocalDate> from;
+		ObjectProperty<LocalDate> to;
+		ObjectProperty<ClientDto> client;
+
+		public MissionTreeRow(MissionDto m) {
+			if (m == null)
+				m = new MissionDto();
+
+			this.m = m;
+
+			this.id = new SimpleIntegerProperty(this.m.id);
+			this.name = new SimpleStringProperty(this.m.name);
+			this.desc = new SimpleStringProperty(this.m.description);
+			this.consultant = new SimpleObjectProperty<EmployeeDto>(this.m.consultant);
+			this.from = new SimpleObjectProperty<LocalDate>(
+					this.m.from.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			this.to = new SimpleObjectProperty<LocalDate>(
+					this.m.to.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			this.client = new SimpleObjectProperty<ClientDto>(this.m.client);
+		}
+
+		public void clear() {
+			id.set(m.id);
+			name.set(m.name);
+			desc.set(m.description);
+			consultant.set(m.consultant);
+			from.set(m.from.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			to.set(m.to.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			client.set(m.client);
+		}
+
+		public MissionDto getNewDto() {
+			MissionDto result = new MissionDto();
+
+			result.name = name.get();
+			result.description = desc.get();
+			result.consultant = consultant.get();
+			result.from = Date.from(from.get().atStartOfDay(ZoneId.systemDefault()).toInstant());
+			result.to = Date.from(to.get().atStartOfDay(ZoneId.systemDefault()).toInstant());
+			result.client = client.get();
+
+			return result;
+		}
+	}
+
 	@Override
 	public void init() {
 		if (isInit)
@@ -195,6 +277,59 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 					}
 				});
 
+		treeview.getColumns().clear();
+
+		treeview.getColumns().add(firstNameColumn);
+		treeview.getColumns().add(lastNameColumn);
+		treeview.getColumns().add(emailColumn);
+
+		JFXTreeTableColumn<MissionTreeRow, String> nameColumn = new JFXTreeTableColumn<MissionTreeRow, String>("Name");
+		nameColumn.setCellValueFactory(
+				new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(CellDataFeatures<MissionTreeRow, String> param) {
+						if (param.getValue().getValue() == null)
+							return new SimpleStringProperty(null);
+
+						return param.getValue().getValue().name;
+					}
+				});
+
+		JFXTreeTableColumn<MissionTreeRow, String> clientColumn = new JFXTreeTableColumn<MissionTreeRow, String>(
+				"Client");
+		clientColumn.setCellValueFactory(
+				new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(CellDataFeatures<MissionTreeRow, String> param) {
+						if (param.getValue().getValue() == null)
+							return new SimpleStringProperty(null);
+
+						return new SimpleStringProperty(param.getValue().getValue().client.get().name);
+					}
+				});
+
+		JFXTreeTableColumn<MissionTreeRow, LocalDate> endDateColumn = new JFXTreeTableColumn<MissionTreeRow, LocalDate>(
+				"End");
+		endDateColumn.setCellValueFactory(
+				new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, LocalDate>, ObservableValue<LocalDate>>() {
+
+					@Override
+					public ObservableValue<LocalDate> call(CellDataFeatures<MissionTreeRow, LocalDate> param) {
+						if (param.getValue().getValue() == null)
+							return new SimpleObjectProperty<LocalDate>(null);
+
+						return param.getValue().getValue().to;
+					}
+				});
+
+		missionsView.getColumns().clear();
+
+		missionsView.getColumns().add(nameColumn);
+		missionsView.getColumns().add(clientColumn);
+		missionsView.getColumns().add(endDateColumn);
+
 		ChangeListener<String> listenner = new ChangeListener<String>() {
 
 			@Override
@@ -219,12 +354,6 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 		searchByNameInput.textProperty().addListener(listenner);
 		searchByEmailInput.textProperty().addListener(listenner);
 
-		treeview.getColumns().clear();
-
-		treeview.getColumns().add(firstNameColumn);
-		treeview.getColumns().add(lastNameColumn);
-		treeview.getColumns().add(emailColumn);
-
 		getAllConsultant();
 
 		treeview.getSelectionModel().selectedItemProperty()
@@ -239,6 +368,21 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 							setSelectedEmployee(null, oldValue.getValue());
 						else
 							setSelectedEmployee(newValue.getValue(), oldValue.getValue());
+					}
+				});
+
+		missionsView.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<TreeItem<MissionTreeRow>>() {
+
+					public void changed(ObservableValue<? extends TreeItem<MissionTreeRow>> observable,
+							TreeItem<MissionTreeRow> oldValue, TreeItem<MissionTreeRow> newValue) {
+
+						if (oldValue == null)
+							setSelectedMission(newValue.getValue(), null);
+						else if (newValue == null)
+							setSelectedMission(null, oldValue.getValue());
+						else
+							setSelectedMission(newValue.getValue(), oldValue.getValue());
 					}
 				});
 		isInit = true;
@@ -260,16 +404,59 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 					public void run() {
 						if (response != null) {
 							if (response instanceof GetAllConsultantsResponse) {
-								list.clear();
+								employeelist.clear();
 
 								for (EmployeeDto e : ((GetAllConsultantsResponse) response).consultants) {
-									list.add(new EmployeeTreeRow(e));
+									employeelist.add(new EmployeeTreeRow(e));
 								}
 
-								TreeItem<EmployeeTreeRow> root = new RecursiveTreeItem<EmployeeTreeRow>(list,
+								TreeItem<EmployeeTreeRow> root = new RecursiveTreeItem<EmployeeTreeRow>(employeelist,
 										RecursiveTreeObject::getChildren);
 								treeview.setRoot(root);
 								treeview.setShowRoot(false);
+							}
+						}
+					}
+				});
+			}
+		});
+	}
+
+	private void getMissions(EmployeeDto e) {
+		if (treeview.getSelectionModel() == null || treeview.getSelectionModel().getSelectedItem() == null)
+			return;
+
+		if (e == null)
+			return;
+
+		GetMissionsByConsultantRequest request = new GetMissionsByConsultantRequest();
+		request.employee = e;
+
+		AbylsenApiClient.getInstance().GetMissionByConsultant(request, new IAbylsenApiListener() {
+
+			@Override
+			public void OnResponseRefused(Object response, Headers headers) {
+
+			}
+
+			@Override
+			public void OnResponseAccepted(Object response, Headers headers) {
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+						if (response != null) {
+							if (response instanceof GetMissionsResponse) {
+								missionList.clear();
+
+								for (MissionDto m : ((GetMissionsResponse) response).missions) {
+									missionList.add(new MissionTreeRow(m));
+								}
+
+								TreeItem<MissionTreeRow> root = new RecursiveTreeItem<MissionTreeRow>(missionList,
+										RecursiveTreeObject::getChildren);
+								missionsView.setRoot(root);
+								missionsView.setShowRoot(false);
 							}
 						}
 					}
@@ -284,12 +471,31 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			lastNameTextField.textProperty().unbindBidirectional(oldRow.lastName);
 			emailTextField.textProperty().unbindBidirectional(oldRow.email);
 			posteComboBox.valueProperty().unbindBidirectional(oldRow.poste);
+
+			missionList.clear();
 		}
 		if (newRow != null) {
 			firstNameTextField.textProperty().bindBidirectional(newRow.firstName);
 			lastNameTextField.textProperty().bindBidirectional(newRow.lastName);
 			emailTextField.textProperty().bindBidirectional(newRow.email);
 			posteComboBox.valueProperty().bindBidirectional(newRow.poste);
+
+			getMissions(newRow.getNewDto());
+		}
+	}
+
+	private void setSelectedMission(MissionTreeRow newRow, MissionTreeRow oldRow) {
+		if (oldRow != null) {
+			missionNameTextField.textProperty().unbindBidirectional(oldRow.name);
+			missionDescriptionTextField.textProperty().unbindBidirectional(oldRow.desc);
+			missionstartDate.valueProperty().unbindBidirectional(oldRow.from);
+			missionEndDate.valueProperty().unbindBidirectional(oldRow.to);
+		}
+		if (newRow != null) {
+			missionNameTextField.textProperty().bindBidirectional(newRow.name);
+			missionDescriptionTextField.textProperty().bindBidirectional(newRow.desc);
+			missionstartDate.valueProperty().bindBidirectional(newRow.from);
+			missionEndDate.valueProperty().bindBidirectional(newRow.to);
 		}
 	}
 
@@ -430,8 +636,8 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 					public void run() {
 						MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
 								Toast.DURATION_LONG);
-						
-						if(br.statusCode == 200) {
+
+						if (br.statusCode == 200) {
 							getAllConsultant();
 						}
 					}

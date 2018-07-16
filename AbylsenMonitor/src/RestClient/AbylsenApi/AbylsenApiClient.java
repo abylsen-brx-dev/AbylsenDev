@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import Dto.MissionDto;
 import RestClient.ErrorApiUtils;
 import contexte.MainApplicationContexte;
 import enums.HttpHeaders;
@@ -285,6 +286,66 @@ public class AbylsenApiClient {
 
 			@Override
 			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+				BaseResponse br = new BaseResponse();
+				br.message = arg1.getMessage();
+				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+
+				listener.OnResponseRefused(br, null);
+			}
+		});
+	}
+	
+	public void GetMissionByConsultant(GetMissionsByConsultantRequest request, IAbylsenApiListener listener) {
+		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
+
+		client.getByConsultant(request).enqueue(new Callback<GetMissionsResponse>() {
+
+			@Override
+			public void onResponse(Call<GetMissionsResponse> arg0, retrofit2.Response<GetMissionsResponse> arg1) {
+				BaseResponse br = arg1.body();
+				if (br == null) {
+					br = ErrorApiUtils.parseError(arg1, retrofit);
+				}
+
+				if (br.statusCode == 200) {
+					listener.OnResponseAccepted(arg1.body(), arg1.headers());
+				} else {
+					listener.OnResponseRefused(br, arg1.headers());
+				}
+			}
+
+			@Override
+			public void onFailure(Call<GetMissionsResponse> arg0, Throwable arg1) {
+				BaseResponse br = new BaseResponse();
+				br.message = arg1.getMessage();
+				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+
+				listener.OnResponseRefused(br, null);
+			}
+		});
+	}
+	
+	public void addMission(MissionDto request, IAbylsenApiListener listener) {
+		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
+
+		client.addMission(request).enqueue(new Callback<GetMissionsResponse>() {
+
+			@Override
+			public void onResponse(Call<GetMissionsResponse> arg0, retrofit2.Response<GetMissionsResponse> arg1) {
+				BaseResponse br = arg1.body();
+				if (br == null) {
+					br = ErrorApiUtils.parseError(arg1, retrofit);
+				}
+
+				if (br.statusCode == 200) {
+					listener.OnResponseAccepted(arg1.body(), arg1.headers());
+				} else {
+					listener.OnResponseRefused(br, arg1.headers());
+				}
+			}
+
+			@Override
+			public void onFailure(Call<GetMissionsResponse> arg0, Throwable arg1) {
 				BaseResponse br = new BaseResponse();
 				br.message = arg1.getMessage();
 				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;

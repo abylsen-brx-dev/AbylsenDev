@@ -1,12 +1,14 @@
 model\BaseRequest.class
 model\BaseResponse.class
 model\CreateAccountResponse.class
+model\GetMissionsByConsultantRequest.class
 model\UpdateEmployeeRequest.class
 model\GetAllConsultantsResponse.class
 Dto\MissionDto.class
 enums\EmployeeEnums.class
 model\GetAllClientResponse.class
 enums\HttpStatus.class
+model\GetMissionsResponse.class
 model\CreateAccountRequest.class
 model\RegistrationRequest.class
 model\AddEmployeeRequest.class

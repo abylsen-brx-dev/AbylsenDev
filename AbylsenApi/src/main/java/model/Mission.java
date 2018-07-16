@@ -171,7 +171,19 @@ public class Mission {
 					.add(Restrictions.eq("client", c))
 					.list();
 		} catch (Exception e) {
-			LoggerManager.getInstance().logError("[Mission.getAll] Error while getting all missions : ", e);
+			LoggerManager.getInstance().logError("[Mission.getAllByClient] Error while getting all missions : ", e);
+			return new ArrayList<Mission>();
+		}
+	}
+	
+	@SuppressWarnings({ "deprecation", "unchecked" })
+	public static List<Mission> getAllByConsultant(Session session, Employee c) {
+		try {
+			return session.createCriteria(Mission.class)
+					.add(Restrictions.eq("consultant", c))
+					.list();
+		} catch (Exception e) {
+			LoggerManager.getInstance().logError("[Mission.getAllByConsultant] Error while getting all missions : ", e);
 			return new ArrayList<Mission>();
 		}
 	}
