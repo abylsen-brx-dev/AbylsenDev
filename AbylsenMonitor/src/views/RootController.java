@@ -22,6 +22,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -34,14 +35,17 @@ public class RootController extends BorderPane {
 	@FXML
 	private VBox menu;
 
-	private boolean menuOpen;
-
 	@FXML
 	private JFXHamburger hamburger;
 
-	@FXML 
+	@FXML
 	private BorderPane mainContainer;
-	
+
+	@FXML
+	private Pane drawerHandleContainer;
+
+	private boolean menuOpen;
+
 	private Map<JFXButton, Parent> nodes;
 
 	public RootController() {
@@ -54,16 +58,24 @@ public class RootController extends BorderPane {
 			fxmlLoader.load();
 
 			HamburgerSlideCloseTransition t = new HamburgerSlideCloseTransition(hamburger);
-			t.setRate(-1);
+			t.setRate(1);
 
 			hamburger.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 				t.setRate(t.getRate() * -1);
 				t.play();
-				showMenu(!menuOpen, 200);
+				showMenu(menuOpen, 200);
 			});
 
-			showMenu(false, 0);
+			drawerHandleContainer.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+				t.setRate(t.getRate() * -1);
+				t.play();
+				showMenu(menuOpen, 200);
+			});
+
 			initDrawer();
+
+			menuOpen = true;
+			showMenu(menuOpen, 0);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -73,86 +85,89 @@ public class RootController extends BorderPane {
 		nodes = new HashMap<JFXButton, Parent>();
 
 		menu.getChildren().add(new MinimalistAccountViewer(MainApplicationContexte.getInstance().getUser()));
-		
+
 		ConsultantMangerController parent1 = new ConsultantMangerController();
 		JFXButton button1 = getMenuButton(parent1);
 		nodes.put(button1, parent1);
-		
+
 		MainDashboardController parent2 = new MainDashboardController();
 		JFXButton button2 = getMenuButton(parent2);
 		nodes.put(button2, parent2);
 
 		menu.getChildren().add(button2);
 		menu.getChildren().add(button1);
-		
+
 		selectMenu(button2);
-		
+
 		menu.prefHeightProperty().bind(mainContainer.heightProperty());
 	}
 
 	private JFXButton getMenuButton(IInitializable parent) {
 		JFXButton button;
-		
+
 		button = new JFXButton();
 		button.setText(parent.getTitle());
-		
+
 		button.setPadding(new Insets(10));
 		button.prefWidthProperty().bind(menu.widthProperty());
 		button.setOnAction(e -> {
-			if(e.getSource() instanceof JFXButton) {
-				selectMenu((JFXButton)e.getSource());
+			if (e.getSource() instanceof JFXButton) {
+				selectMenu((JFXButton) e.getSource());
 			}
 		});
-		
+
 		return button;
 	}
-	
+
 	private void showMenu(boolean visible, int duration) {
 		TranslateTransition tt = new TranslateTransition();
 		tt.setDuration(Duration.millis(duration));
-		
+
 		tt.setNode(menu);
-		
+
 		if (!visible) {
 			tt.setToX(-menu.getWidth());
-
+			tt.setFromX(0);
 		} else {
 			tt.setToX(0);
+			tt.setFromX(-menu.getWidth());
 		}
 
-		tt.setOnFinished(e -> menuOpen = visible);
-		
+		tt.setOnFinished(e -> menuOpen = !visible);
+
 		tt.play();
+
+		drawerHandleContainer.setVisible(visible);
 	}
-	
+
 	private void selectMenu(JFXButton source) {
-		if(!title.getText().equals(source.getText().toUpperCase())) {
-			for(JFXButton b : nodes.keySet()) {
-				if(b.equals(source))
+		if (!title.getText().equals(source.getText().toUpperCase())) {
+			for (JFXButton b : nodes.keySet()) {
+				if (b.equals(source))
 					makeButtonSelected(b);
 				else
 					makeButtonUnselected(b);
 			}
 		}
 	}
-	
+
 	private void makeButtonUnselected(JFXButton b) {
 		b.setTextFill(Color.GRAY);
 		b.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 		b.setOpacity(0.7);
-		
+
 		mainContainer.getChildren().remove(nodes.get(b));
 	}
-	
+
 	private void makeButtonSelected(JFXButton b) {
 		b.setTextFill(Color.WHITE);
 		b.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 		b.setOpacity(0.7);
-		
+
 		title.setText(b.getText().toUpperCase());
-		
-		mainContainer.setCenter(nodes.get(b));		
-		if(nodes.get(b) instanceof IInitializable)
-			((IInitializable)nodes.get(b)).init();
+
+		mainContainer.setCenter(nodes.get(b));
+		if (nodes.get(b) instanceof IInitializable)
+			((IInitializable) nodes.get(b)).init();
 	}
 }
