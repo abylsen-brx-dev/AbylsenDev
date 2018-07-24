@@ -33,6 +33,9 @@ public class Employee extends Person {
 	
 	@Column(name="POSTE")
 	private String poste;
+
+	@Column(name="PHONE_NUMBER")
+	private String phoneNumber;
 	
 	@ManyToOne
 	@JoinColumn(name="MASTER_ID")
@@ -69,6 +72,14 @@ public class Employee extends Person {
 		this.poste = poste;
 	}
 	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
 	public Employee getMaster() {
 		return master;
 	}
@@ -94,6 +105,7 @@ public class Employee extends Person {
 			this.email = ((EmployeeDto)e).email;
 			this.password = ((EmployeeDto)e).password;
 			this.poste = ((EmployeeDto)e).poste;
+			this.phoneNumber = ((EmployeeDto)e).phoneNumber;
 		}
 		
 		super.fromDto(e);
@@ -109,6 +121,7 @@ public class Employee extends Person {
 		dto.email = email;
 		dto.password = password;
 		dto.poste = poste;
+		dto.phoneNumber = phoneNumber;
 		
 		return dto;
 	}

@@ -4,13 +4,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.animation.FadeTransition;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-public class Toast extends Label {
+public class Toast extends StackPane {
 
+	private Label l;
+	
 	private VBox parent;
 	public static double DURATION_LONG = 2;
 	public static double DURATION_SHORT = 1;
@@ -19,14 +23,16 @@ public class Toast extends Label {
 	public Toast(VBox parent) {
 		this.parent = parent;
 		
-		String css = "-fx-background-color: #c0c0c0;\r\n" + 
-				"	-fx-border-radius: 10;\r\n" + 
-				"	-fx-border-style: solid inside;\r\n" + 
-				"	-fx-border-color: #c0c0c0;\r\n" + 
-				"	-fx-border-insets: 5;";
+		setStyle(
+                "-fx-background-color: #b0b0b0, #b0b0b0;"
+                + "-fx-background-insets: 0, 1;"
+                + "-fx-background-radius: 100, 99;");
 		
-		setStyle(css);
-		setTextFill(Paint.valueOf("#000000"));
+		l = new Label();
+		l.setTextFill(Color.web("#ffffff"));
+		l.setPadding(new Insets(10));
+		
+		this.getChildren().add(l);
 	}
 
 	public void show(String msg, double duration) {
@@ -34,7 +40,8 @@ public class Toast extends Label {
 			return;
 		
 		parent.getChildren().add(this);
-		this.setText(msg);
+		l.setText(msg);
+		
 		timer = new Timer();
 		
 		FadeTransition ft = new FadeTransition(Duration.millis(200), this);

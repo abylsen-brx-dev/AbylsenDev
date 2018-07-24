@@ -1,5 +1,6 @@
 package RestClient.AbylsenApi;
 
+import Dto.ClientDto;
 import Dto.MissionDto;
 import model.*;
 import retrofit2.Call;
@@ -26,6 +27,12 @@ public interface IAbylsenApiRestClient {
 	
 	@GET("/client/getAll/")
 	Call<GetAllClientResponse> getAllClients();
+
+	@POST("/client/add/")
+	Call<BaseResponse> addClient(@Body ClientDto request);
+
+	@POST("/client/update/")
+	Call<BaseResponse> updateClient(@Body ClientDto request);
 	
 	@POST("/person/addEmployee/")
 	Call<BaseResponse> addEmployee(@Body AddEmployeeRequest request);

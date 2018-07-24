@@ -7,20 +7,38 @@
 	
 }
 
-.search-icon {
-	-fx-background-image: url('search_icon.png');
+.minimalist-background {
+	-fx-background-image: url('drawer_background.jpeg');
 	-fx-background-size: 100% 100%;
 	-fx-background-repeat: no-repeat no-repeat;
 	-fx-background-position: center;
 	
 }
 
-.drawer-contairner{
-	-fx-background-color: #ffffff;
+.search-icon {
+	-fx-background-image: url('search_icon.png');
+	-fx-background-size: 100% 100%;
+	-fx-background-repeat: no-repeat no-repeat;
+	-fx-background-position: center;
 }
 
+.drawer-contairner{
+	-fx-background-color: #1D2933;
+}
+
+.main-title-container {
+	-fx-background-color: #06D6A0;
+}
 .drawer-second-container {
 	-fx-background-color: rgba(0, 0, 0, .5);
+}
+
+.card-shadow {
+	-fx-background-color: rgba(0, 0, 0, .5);
+}
+
+.card-background {
+	-fx-background-color:  #ffffff;
 }
 
 .connection-container{
@@ -129,11 +147,19 @@
 }
  
 .tree-table-view .scroll-bar:horizontal .thumb,
-.tree-table-view .scroll-bar:vertical .thumb
+.tree-table-view .scroll-bar:vertical .thumb,
 .jfx-list-view .scroll-bar:horizontal .thumb,
 .jfx-list-view .scroll-bar:vertical .thumb {
     -fx-background-color:derive(black,90%);
 	-fx-background-insets: 2, 0, 0;
 	-fx-background-radius: 2em;
  
+}
+
+.tile-action-button {
+	-fx-background-color: rgba(220, 220, 220, .5);
+}
+
+.tile-title-bg {
+	-fx-background-color: rgba(200, 240, 200, .5);
 }

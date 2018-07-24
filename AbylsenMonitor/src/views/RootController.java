@@ -14,6 +14,8 @@ import controls.Toast;
 import interfaces.IInitializable;
 import interfaces.IView;
 import javafx.animation.TranslateTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -27,6 +29,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 public class RootController extends BorderPane implements IView {
@@ -48,7 +51,7 @@ public class RootController extends BorderPane implements IView {
 
 	@FXML
 	private VBox toastContainer;
-	
+
 	private boolean menuOpen;
 
 	private Map<JFXButton, Parent> nodes;
@@ -95,14 +98,45 @@ public class RootController extends BorderPane implements IView {
 		JFXButton button1 = getMenuButton(parent1);
 		nodes.put(button1, parent1);
 
-		MainDashboardController parent2 = new MainDashboardController();
+		MapViewController parent2 = new MapViewController();
 		JFXButton button2 = getMenuButton(parent2);
 		nodes.put(button2, parent2);
 
+		ClientWizzardController parent3 = new ClientWizzardController();
+		JFXButton button3 = getMenuButton(parent3);
+		nodes.put(button3, parent3);
+
+		CardBoardController parent4 = new CardBoardController();
+		JFXButton button4 = getMenuButton(parent4);
+		nodes.put(button4, parent4);
+
+		HomeController parent5 = new HomeController();
+
+		ChangeListener<Number> stageSizeListener = new ChangeListener<Number>() {
+			
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				parent5
+					.setParentSize(mainContainer.getWidth(), mainContainer.getHeight());
+				
+				parent5.initTile();
+			}
+		};
+				
+
+		mainContainer.widthProperty().addListener(stageSizeListener);
+		mainContainer.heightProperty().addListener(stageSizeListener);
+
+		JFXButton button5 = getMenuButton(parent5);
+		nodes.put(button5, parent5);
+
+		menu.getChildren().add(button5);
 		menu.getChildren().add(button2);
 		menu.getChildren().add(button1);
+		menu.getChildren().add(button3);
+		menu.getChildren().add(button4);
 
-		selectMenu(button2);
+		selectMenu(button5);
 
 		menu.prefHeightProperty().bind(mainContainer.heightProperty());
 	}
@@ -157,25 +191,23 @@ public class RootController extends BorderPane implements IView {
 	}
 
 	private void makeButtonUnselected(JFXButton b) {
-		b.setTextFill(Color.GRAY);
+		b.setTextFill(Color.WHITE);
 		b.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-		b.setOpacity(0.7);
 
 		mainContainer.getChildren().remove(nodes.get(b));
 	}
 
 	private void makeButtonSelected(JFXButton b) {
-		b.setTextFill(Color.WHITE);
+		b.setTextFill(Color.WHITESMOKE);
 		b.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-		b.setOpacity(0.7);
-
+		b.setTextAlignment(TextAlignment.LEFT);
 		title.setText(b.getText().toUpperCase());
 
 		mainContainer.setCenter(nodes.get(b));
 		if (nodes.get(b) instanceof IInitializable)
 			((IInitializable) nodes.get(b)).init();
 	}
-	
+
 	public void DisplayToast(String msg, int duration) {
 		new Toast(toastContainer).show(msg, duration);
 	}

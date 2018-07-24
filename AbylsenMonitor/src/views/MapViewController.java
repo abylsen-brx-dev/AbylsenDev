@@ -46,10 +46,10 @@ import javafx.util.Duration;
 import model.GetAllClientResponse;
 import okhttp3.Headers;
 
-public class MainDashboardController extends AnchorPane
+public class MapViewController extends AnchorPane
 		implements IInitializable, MapComponentInitializedListener, DirectionsServiceCallback {
 
-	private String title = "Main DashBoard";
+	private String title = "Map Viewer";
 
 	@FXML
 	private GoogleMapView googleMapView;
@@ -91,8 +91,8 @@ public class MainDashboardController extends AnchorPane
 
 	private ObjectProperty<Marker> searchMarker;
 
-	public MainDashboardController() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/MainDashboardView.fxml"));
+	public MapViewController() {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/MapView.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 

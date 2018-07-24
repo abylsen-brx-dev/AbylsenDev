@@ -124,6 +124,157 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 
 			posteComboBox.setItems(getPostes());
 
+			JFXTreeTableColumn<EmployeeTreeRow, String> firstNameColumn = new JFXTreeTableColumn<EmployeeTreeRow, String>(
+					"First Name");
+			firstNameColumn.setCellValueFactory(
+					new Callback<TreeTableColumn.CellDataFeatures<EmployeeTreeRow, String>, ObservableValue<String>>() {
+
+						@Override
+						public ObservableValue<String> call(CellDataFeatures<EmployeeTreeRow, String> param) {
+							if (param.getValue().getValue() == null)
+								return new SimpleStringProperty(null);
+
+							return param.getValue().getValue().firstName;
+						}
+					});
+
+			JFXTreeTableColumn<EmployeeTreeRow, String> lastNameColumn = new JFXTreeTableColumn<EmployeeTreeRow, String>(
+					"Last Name");
+			lastNameColumn.setCellValueFactory(
+					new Callback<TreeTableColumn.CellDataFeatures<EmployeeTreeRow, String>, ObservableValue<String>>() {
+
+						@Override
+						public ObservableValue<String> call(CellDataFeatures<EmployeeTreeRow, String> param) {
+							if (param.getValue().getValue() == null)
+								return new SimpleStringProperty(null);
+
+							return param.getValue().getValue().lastName;
+						}
+					});
+
+			JFXTreeTableColumn<EmployeeTreeRow, String> emailColumn = new JFXTreeTableColumn<EmployeeTreeRow, String>(
+					"Email");
+			emailColumn.setCellValueFactory(
+					new Callback<TreeTableColumn.CellDataFeatures<EmployeeTreeRow, String>, ObservableValue<String>>() {
+
+						@Override
+						public ObservableValue<String> call(CellDataFeatures<EmployeeTreeRow, String> param) {
+							if (param.getValue().getValue() == null)
+								return new SimpleStringProperty(null);
+
+							return param.getValue().getValue().email;
+						}
+					});
+
+			treeview.getColumns().add(firstNameColumn);
+			treeview.getColumns().add(lastNameColumn);
+			treeview.getColumns().add(emailColumn);
+
+			JFXTreeTableColumn<MissionTreeRow, String> nameColumn = new JFXTreeTableColumn<MissionTreeRow, String>(
+					"Name");
+			nameColumn.setCellValueFactory(
+					new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, String>, ObservableValue<String>>() {
+
+						@Override
+						public ObservableValue<String> call(CellDataFeatures<MissionTreeRow, String> param) {
+							if (param.getValue().getValue() == null)
+								return new SimpleStringProperty(null);
+
+							return param.getValue().getValue().name;
+						}
+					});
+
+			JFXTreeTableColumn<MissionTreeRow, String> clientColumn = new JFXTreeTableColumn<MissionTreeRow, String>(
+					"Client");
+			clientColumn.setCellValueFactory(
+					new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, String>, ObservableValue<String>>() {
+
+						@Override
+						public ObservableValue<String> call(CellDataFeatures<MissionTreeRow, String> param) {
+							if (param.getValue().getValue() == null)
+								return new SimpleStringProperty(null);
+
+							return new SimpleStringProperty(param.getValue().getValue().client.get().name);
+						}
+					});
+
+			JFXTreeTableColumn<MissionTreeRow, LocalDate> endDateColumn = new JFXTreeTableColumn<MissionTreeRow, LocalDate>(
+					"End");
+			endDateColumn.setCellValueFactory(
+					new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, LocalDate>, ObservableValue<LocalDate>>() {
+
+						@Override
+						public ObservableValue<LocalDate> call(CellDataFeatures<MissionTreeRow, LocalDate> param) {
+							if (param.getValue().getValue() == null)
+								return new SimpleObjectProperty<LocalDate>(null);
+
+							return param.getValue().getValue().to;
+						}
+					});
+
+			missionsView.getColumns().add(nameColumn);
+			missionsView.getColumns().add(clientColumn);
+			missionsView.getColumns().add(endDateColumn);
+
+			ChangeListener<String> listenner = new ChangeListener<String>() {
+
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					treeview.setPredicate(new Predicate<TreeItem<EmployeeTreeRow>>() {
+
+						@Override
+						public boolean test(TreeItem<EmployeeTreeRow> t) {
+
+							if ((byEmailInput.get() == null || byEmailInput.get().equals(""))
+									&& (byNameInput.get() == null || byNameInput.get().equals("")))
+								return true;
+
+							return t.getValue().lastName.getValue().contains(byNameInput.get())
+									&& t.getValue().email.getValue().contains(byEmailInput.get());
+						}
+					});
+
+				}
+			};
+
+			searchByNameInput.textProperty().addListener(listenner);
+			searchByEmailInput.textProperty().addListener(listenner);
+
+			treeview.getSelectionModel().selectedItemProperty()
+					.addListener(new ChangeListener<TreeItem<EmployeeTreeRow>>() {
+
+						public void changed(ObservableValue<? extends TreeItem<EmployeeTreeRow>> observable,
+								TreeItem<EmployeeTreeRow> oldValue, TreeItem<EmployeeTreeRow> newValue) {
+
+							if (oldValue == null)
+								setSelectedEmployee(newValue.getValue(), null);
+							else if (newValue == null)
+								setSelectedEmployee(null, oldValue.getValue());
+							else
+								setSelectedEmployee(newValue.getValue(), oldValue.getValue());
+						}
+					});
+
+			missionsView.getSelectionModel().selectedItemProperty()
+					.addListener(new ChangeListener<TreeItem<MissionTreeRow>>() {
+
+						public void changed(ObservableValue<? extends TreeItem<MissionTreeRow>> observable,
+								TreeItem<MissionTreeRow> oldValue, TreeItem<MissionTreeRow> newValue) {
+
+							if (oldValue == null)
+								setSelectedMission(newValue.getValue(), null);
+							else if (newValue == null)
+								setSelectedMission(null, oldValue.getValue());
+							else
+								setSelectedMission(newValue.getValue(), oldValue.getValue());
+						}
+					});
+
+			TreeItem<EmployeeTreeRow> root = new RecursiveTreeItem<EmployeeTreeRow>(employeelist,
+					RecursiveTreeObject::getChildren);
+			treeview.setRoot(root);
+			treeview.setShowRoot(false);
+
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -139,6 +290,7 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 		StringProperty email;
 		StringProperty poste;
 		StringProperty password;
+		StringProperty phoneNumber;
 
 		public EmployeeTreeRow(EmployeeDto e) {
 			if (e == null)
@@ -152,6 +304,7 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			this.email = new SimpleStringProperty(this.e.email);
 			this.poste = new SimpleStringProperty(this.e.poste);
 			this.password = new SimpleStringProperty(this.e.password);
+			this.phoneNumber = new SimpleStringProperty(this.e.phoneNumber);
 		}
 
 		public void clear() {
@@ -161,6 +314,7 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			email.set(e.email);
 			poste.set(e.poste);
 			password.set(e.password);
+			phoneNumber.set(e.phoneNumber);
 		}
 
 		public EmployeeDto getNewDto() {
@@ -172,7 +326,8 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			result.id = id.get();
 			result.password = password.get();
 			result.poste = poste.get();
-
+			result.phoneNumber = phoneNumber.get();
+			
 			return result;
 		}
 	}
@@ -199,10 +354,18 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			this.name = new SimpleStringProperty(this.m.name);
 			this.desc = new SimpleStringProperty(this.m.description);
 			this.consultant = new SimpleObjectProperty<EmployeeDto>(this.m.consultant);
-			this.from = new SimpleObjectProperty<LocalDate>(
-					this.m.from.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-			this.to = new SimpleObjectProperty<LocalDate>(
-					this.m.to.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			if (this.m.from != null)
+				this.from = new SimpleObjectProperty<LocalDate>(
+						this.m.from.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			else
+				this.from = new SimpleObjectProperty<LocalDate>(null);
+
+			if (this.m.from != null)
+				this.to = new SimpleObjectProperty<LocalDate>(
+						this.m.to.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			else
+				this.to = new SimpleObjectProperty<LocalDate>(null);
+
 			this.client = new SimpleObjectProperty<ClientDto>(this.m.client);
 		}
 
@@ -232,159 +395,10 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 
 	@Override
 	public void init() {
-		if (isInit)
-			return;
-
-		JFXTreeTableColumn<EmployeeTreeRow, String> firstNameColumn = new JFXTreeTableColumn<EmployeeTreeRow, String>(
-				"First Name");
-		firstNameColumn.setCellValueFactory(
-				new Callback<TreeTableColumn.CellDataFeatures<EmployeeTreeRow, String>, ObservableValue<String>>() {
-
-					@Override
-					public ObservableValue<String> call(CellDataFeatures<EmployeeTreeRow, String> param) {
-						if (param.getValue().getValue() == null)
-							return new SimpleStringProperty(null);
-
-						return param.getValue().getValue().firstName;
-					}
-				});
-
-		JFXTreeTableColumn<EmployeeTreeRow, String> lastNameColumn = new JFXTreeTableColumn<EmployeeTreeRow, String>(
-				"Last Name");
-		lastNameColumn.setCellValueFactory(
-				new Callback<TreeTableColumn.CellDataFeatures<EmployeeTreeRow, String>, ObservableValue<String>>() {
-
-					@Override
-					public ObservableValue<String> call(CellDataFeatures<EmployeeTreeRow, String> param) {
-						if (param.getValue().getValue() == null)
-							return new SimpleStringProperty(null);
-
-						return param.getValue().getValue().lastName;
-					}
-				});
-
-		JFXTreeTableColumn<EmployeeTreeRow, String> emailColumn = new JFXTreeTableColumn<EmployeeTreeRow, String>(
-				"Email");
-		emailColumn.setCellValueFactory(
-				new Callback<TreeTableColumn.CellDataFeatures<EmployeeTreeRow, String>, ObservableValue<String>>() {
-
-					@Override
-					public ObservableValue<String> call(CellDataFeatures<EmployeeTreeRow, String> param) {
-						if (param.getValue().getValue() == null)
-							return new SimpleStringProperty(null);
-
-						return param.getValue().getValue().email;
-					}
-				});
-
-		treeview.getColumns().clear();
-
-		treeview.getColumns().add(firstNameColumn);
-		treeview.getColumns().add(lastNameColumn);
-		treeview.getColumns().add(emailColumn);
-
-		JFXTreeTableColumn<MissionTreeRow, String> nameColumn = new JFXTreeTableColumn<MissionTreeRow, String>("Name");
-		nameColumn.setCellValueFactory(
-				new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, String>, ObservableValue<String>>() {
-
-					@Override
-					public ObservableValue<String> call(CellDataFeatures<MissionTreeRow, String> param) {
-						if (param.getValue().getValue() == null)
-							return new SimpleStringProperty(null);
-
-						return param.getValue().getValue().name;
-					}
-				});
-
-		JFXTreeTableColumn<MissionTreeRow, String> clientColumn = new JFXTreeTableColumn<MissionTreeRow, String>(
-				"Client");
-		clientColumn.setCellValueFactory(
-				new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, String>, ObservableValue<String>>() {
-
-					@Override
-					public ObservableValue<String> call(CellDataFeatures<MissionTreeRow, String> param) {
-						if (param.getValue().getValue() == null)
-							return new SimpleStringProperty(null);
-
-						return new SimpleStringProperty(param.getValue().getValue().client.get().name);
-					}
-				});
-
-		JFXTreeTableColumn<MissionTreeRow, LocalDate> endDateColumn = new JFXTreeTableColumn<MissionTreeRow, LocalDate>(
-				"End");
-		endDateColumn.setCellValueFactory(
-				new Callback<TreeTableColumn.CellDataFeatures<MissionTreeRow, LocalDate>, ObservableValue<LocalDate>>() {
-
-					@Override
-					public ObservableValue<LocalDate> call(CellDataFeatures<MissionTreeRow, LocalDate> param) {
-						if (param.getValue().getValue() == null)
-							return new SimpleObjectProperty<LocalDate>(null);
-
-						return param.getValue().getValue().to;
-					}
-				});
-
-		missionsView.getColumns().clear();
-
-		missionsView.getColumns().add(nameColumn);
-		missionsView.getColumns().add(clientColumn);
-		missionsView.getColumns().add(endDateColumn);
-
-		ChangeListener<String> listenner = new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				treeview.setPredicate(new Predicate<TreeItem<EmployeeTreeRow>>() {
-
-					@Override
-					public boolean test(TreeItem<EmployeeTreeRow> t) {
-
-						if ((byEmailInput.get() == null || byEmailInput.get().equals(""))
-								&& (byNameInput.get() == null || byNameInput.get().equals("")))
-							return true;
-
-						return t.getValue().lastName.getValue().contains(byNameInput.get())
-								&& t.getValue().email.getValue().contains(byEmailInput.get());
-					}
-				});
-
-			}
-		};
-
-		searchByNameInput.textProperty().addListener(listenner);
-		searchByEmailInput.textProperty().addListener(listenner);
+		isInit = false;
 
 		getAllConsultant();
 
-		treeview.getSelectionModel().selectedItemProperty()
-				.addListener(new ChangeListener<TreeItem<EmployeeTreeRow>>() {
-
-					public void changed(ObservableValue<? extends TreeItem<EmployeeTreeRow>> observable,
-							TreeItem<EmployeeTreeRow> oldValue, TreeItem<EmployeeTreeRow> newValue) {
-
-						if (oldValue == null)
-							setSelectedEmployee(newValue.getValue(), null);
-						else if (newValue == null)
-							setSelectedEmployee(null, oldValue.getValue());
-						else
-							setSelectedEmployee(newValue.getValue(), oldValue.getValue());
-					}
-				});
-
-		missionsView.getSelectionModel().selectedItemProperty()
-				.addListener(new ChangeListener<TreeItem<MissionTreeRow>>() {
-
-					public void changed(ObservableValue<? extends TreeItem<MissionTreeRow>> observable,
-							TreeItem<MissionTreeRow> oldValue, TreeItem<MissionTreeRow> newValue) {
-
-						if (oldValue == null)
-							setSelectedMission(newValue.getValue(), null);
-						else if (newValue == null)
-							setSelectedMission(null, oldValue.getValue());
-						else
-							setSelectedMission(newValue.getValue(), oldValue.getValue());
-					}
-				});
 		isInit = true;
 	}
 
@@ -409,11 +423,6 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 								for (EmployeeDto e : ((GetAllConsultantsResponse) response).consultants) {
 									employeelist.add(new EmployeeTreeRow(e));
 								}
-
-								TreeItem<EmployeeTreeRow> root = new RecursiveTreeItem<EmployeeTreeRow>(employeelist,
-										RecursiveTreeObject::getChildren);
-								treeview.setRoot(root);
-								treeview.setShowRoot(false);
 							}
 						}
 					}
@@ -436,7 +445,18 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 
 			@Override
 			public void OnResponseRefused(Object response, Headers headers) {
-
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						BaseResponse br = (BaseResponse) response;
+						if (br == null)
+							MainApplicationContexte.getInstance().getMainApp().displayToast("Server not working",
+									Toast.DURATION_LONG);
+						else
+							MainApplicationContexte.getInstance().getMainApp().displayToast(br.message,
+									Toast.DURATION_LONG);
+					}
+				});
 			}
 
 			@Override
@@ -471,7 +491,8 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			lastNameTextField.textProperty().unbindBidirectional(oldRow.lastName);
 			emailTextField.textProperty().unbindBidirectional(oldRow.email);
 			posteComboBox.valueProperty().unbindBidirectional(oldRow.poste);
-
+			phoneNumberTextField.textProperty().unbindBidirectional(oldRow.phoneNumber);
+			
 			missionList.clear();
 		}
 		if (newRow != null) {
@@ -479,6 +500,7 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			lastNameTextField.textProperty().bindBidirectional(newRow.lastName);
 			emailTextField.textProperty().bindBidirectional(newRow.email);
 			posteComboBox.valueProperty().bindBidirectional(newRow.poste);
+			phoneNumberTextField.textProperty().bindBidirectional(newRow.phoneNumber);
 
 			getMissions(newRow.getNewDto());
 		}
@@ -530,6 +552,7 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 			row.email.set(emailTextField.textProperty().get());
 			row.poste.set(posteComboBox.valueProperty().get());
 			row.password.set("1234Abylsen");
+			row.phoneNumber.set(phoneNumberTextField.textProperty().get());
 
 			addEmployee(row);
 			return;
@@ -548,14 +571,22 @@ public class ConsultantMangerController extends AnchorPane implements IInitializ
 
 	@FXML
 	private void handleClearSelection() {
-		if (treeview.getSelectionModel().getSelectedItem() != null) {
+		if (treeview.getSelectionModel() != null && treeview.getSelectionModel().getSelectedItem() != null) {
 			setSelectedEmployee(new EmployeeTreeRow(null), treeview.getSelectionModel().getSelectedItem().getValue());
 			treeview.getSelectionModel().select(null);
 		}
 	}
 
 	@FXML
-	private void handlCancelEmployee() {
+	private void handleClearSelection2() {
+		if (missionsView.getSelectionModel() != null && missionsView.getSelectionModel().getSelectedItem() != null) {
+			setSelectedMission(new MissionTreeRow(null), missionsView.getSelectionModel().getSelectedItem().getValue());
+			missionsView.getSelectionModel().select(null);
+		}
+	}
+
+	@FXML
+	private void handleCancelEmployee() {
 		EmployeeTreeRow e = treeview.getSelectionModel().getSelectedItem().getValue();
 		if (e == null)
 			return;

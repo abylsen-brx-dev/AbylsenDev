@@ -17,17 +17,17 @@ public class PersonInitializer implements IInitializer {
 		createPersonIfNotExists(session, "Person1", "Dev");
 		createPersonIfNotExists(session, "Person2", "Dev");
 
-		createEmployeeIfNotExists(session, "Employee1", "Dev", "employee1.dev@dev.com", "devPassword", EmployeeEnums.TYPE_MANAGER);
-		createEmployeeIfNotExists(session, "Employee2", "Dev", "employee2.dev@dev.com", "devPassword", EmployeeEnums.TYPE_MANAGER);
-		createEmployeeIfNotExists(session, "Employee3", "Dev", "employee3.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee4", "Dev", "employee4.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee5", "Dev", "employee5.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee6", "Dev", "employee6.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee7", "Dev", "employee7.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee8", "Dev", "employee8.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee9", "Dev", "employee9.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee10", "Dev", "employee10.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
-		createEmployeeIfNotExists(session, "Employee11", "Dev", "employee11.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT);
+		createEmployeeIfNotExists(session, "Employee1", "Dev", "employee1.dev@dev.com", "devPassword", EmployeeEnums.TYPE_MANAGER, "0699999999");
+		createEmployeeIfNotExists(session, "Employee2", "Dev", "employee2.dev@dev.com", "devPassword", EmployeeEnums.TYPE_MANAGER, "0699999999");
+		createEmployeeIfNotExists(session, "Employee3", "Dev", "employee3.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee4", "Dev", "employee4.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee5", "Dev", "employee5.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee6", "Dev", "employee6.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee7", "Dev", "employee7.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee8", "Dev", "employee8.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee9", "Dev", "employee9.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee10", "Dev", "employee10.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
+		createEmployeeIfNotExists(session, "Employee11", "Dev", "employee11.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999");
 	}
 
 	public static Person createPersonIfNotExists(Session session, String firstName, String lastName) {
@@ -51,7 +51,7 @@ public class PersonInitializer implements IInitializer {
 		return p;
 	}
 	
-	public static Employee createEmployeeIfNotExists(Session session, String firstName, String lastName, String email, String password, String poste) {
+	public static Employee createEmployeeIfNotExists(Session session, String firstName, String lastName, String email, String password, String poste, String phoneNumber) {
 		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(Employee.class);
 		
@@ -60,6 +60,7 @@ public class PersonInitializer implements IInitializer {
 		criteria.add(Restrictions.eq("email", email));
 		criteria.add(Restrictions.eq("password", password));
 		criteria.add(Restrictions.eq("poste", poste));
+		criteria.add(Restrictions.eq("phoneNumber", phoneNumber));
 		
 		
 		Employee e = (Employee)criteria.uniqueResult();
@@ -73,6 +74,7 @@ public class PersonInitializer implements IInitializer {
 		e.setEmail(email);
 		e.setPassword(password);
 		e.setPoste(poste);
+		e.setPhoneNumber(phoneNumber);
 
 		session.save(e);
 		

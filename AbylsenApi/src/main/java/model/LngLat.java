@@ -6,6 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.Session;
+
+import Logging.LoggerManager;
+
 @Entity
 @Table(name="LNG_LATS")
 public class LngLat {
@@ -49,4 +53,12 @@ public class LngLat {
 		this.lat = lat;
 	}
 
+	public static LngLat get(Session session, int id) {
+		try {
+			return session.get(LngLat.class, new Integer(id));
+		} catch (Exception e) {
+			LoggerManager.getInstance().logError("[LngLat.get] Error while getting client : ", e);
+			return null;
+		}
+	}
 }

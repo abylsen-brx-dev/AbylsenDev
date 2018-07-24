@@ -23,7 +23,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla",
 				ClientInitializer.createIfNotExists(session, "GAMING1", "Rue Saint Exupéry 17, 4460 Bierset",
 						ClientInitializer.createIfNotExists(session, 50.638687, 5.4279303)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee4", "Dev", "employee4.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee4", "Dev", "employee4.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 		
@@ -33,7 +33,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla2",
 				ClientInitializer.createIfNotExists(session, "GAMING1", "Rue Saint Exupéry 17, 4460 Bierset",
 						ClientInitializer.createIfNotExists(session, 50.638687, 5.4279303)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee6", "Dev", "employee6.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee6", "Dev", "employee6.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 		
@@ -43,7 +43,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla3",
 				ClientInitializer.createIfNotExists(session, "GAMING1", "Rue Saint Exupéry 17, 4460 Bierset",
 						ClientInitializer.createIfNotExists(session, 50.638687, 5.4279303)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee9", "Dev", "employee9.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee9", "Dev", "employee9.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 		
@@ -53,7 +53,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla4",
 				ClientInitializer.createIfNotExists(session, "GAMING1", "Rue Saint Exupéry 17, 4460 Bierset",
 						ClientInitializer.createIfNotExists(session, 50.638687, 5.4279303)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee11", "Dev", "employee11.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee11", "Dev", "employee11.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 
@@ -63,7 +63,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla5",
 				ClientInitializer.createIfNotExists(session, "Orange Business Service", "Avenue du Bourget 3, 1130 Bruxelles",
 						ClientInitializer.createIfNotExists(session, 50.8767413, 4.4139008)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee3", "Dev", "employee3.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee3", "Dev", "employee3.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 
@@ -73,7 +73,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla6",
 				ClientInitializer.createIfNotExists(session, "Orange Business Service", "Avenue du Bourget 3, 1130 Bruxelles",
 						ClientInitializer.createIfNotExists(session, 50.8767413, 4.4139008)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee5", "Dev", "employee5.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee5", "Dev", "employee5.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 		
@@ -83,7 +83,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla7",
 				ClientInitializer.createIfNotExists(session, "idweaver", "Drève Richelle 159, 1410 Waterloo",
 						ClientInitializer.createIfNotExists(session, 50.709436, 4.407755)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee7", "Dev", "employee7.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee7", "Dev", "employee7.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 		
@@ -93,7 +93,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla8",
 				ClientInitializer.createIfNotExists(session, "idweaver", "Drève Richelle 159, 1410 Waterloo",
 						ClientInitializer.createIfNotExists(session, 50.709436, 4.407755)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee8", "Dev", "employee8.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee8", "Dev", "employee8.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 		
@@ -103,7 +103,7 @@ public class MissionInitializer implements IInitializer {
 				"blablabla9",
 				ClientInitializer.createIfNotExists(session, "idweaver", "Drève Richelle 159, 1410 Waterloo",
 						ClientInitializer.createIfNotExists(session, 50.709436, 4.407755)),
-				PersonInitializer.createEmployeeIfNotExists(session, "Employee10", "Dev", "employee10.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT),
+				PersonInitializer.createEmployeeIfNotExists(session, "Employee10", "Dev", "employee10.dev@dev.com", "devPassword", EmployeeEnums.TYPE_CONSULTANT, "0699999999"),
 				new Date(2017, 9, 1, 0, 0, 0),
 				new Date(2019, 9, 1, 0, 0, 0));
 	}

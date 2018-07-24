@@ -5,25 +5,32 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<fx:root alignment="CENTER" stylesheets="@../resources/MainTheme.css" type="HBox" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="CENTER" styleClass="minimalist-background" stylesheets="@../resources/MainTheme.css" type="HBox" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="TOP_CENTER">
          <children>
-            <Circle fx:id="circle" fill="TRANSPARENT" radius="100.0" stroke="BLACK" strokeType="INSIDE">
+            <Circle fx:id="circle" fill="TRANSPARENT" radius="70.0" stroke="WHITE" strokeType="INSIDE">
                <VBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </VBox.margin>
             </Circle>
-            <Label fx:id="userEmail" text="User Email">
+            <Label fx:id="userEmail" text="User Email" textFill="WHITE">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold Italic" size="18.0" />
+               </font>
             </Label>
-            <Label fx:id="userPoste" text="User poste">
+            <Label fx:id="userPoste" text="User poste" textFill="WHITE">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold Italic" size="13.0" />
+               </font>
             </Label>
          </children>
       </VBox>

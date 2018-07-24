@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import Dto.ClientDto;
 import Dto.MissionDto;
 import RestClient.ErrorApiUtils;
 import contexte.MainApplicationContexte;
@@ -234,6 +235,67 @@ public class AbylsenApiClient {
 			}
 		});
 	}
+	
+	public void addClient(ClientDto request, IAbylsenApiListener listener) {
+		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
+
+		client.addClient(request).enqueue(new Callback<BaseResponse>() {
+
+			@Override
+			public void onResponse(Call<BaseResponse> arg0, retrofit2.Response<BaseResponse> arg1) {
+				BaseResponse br = arg1.body();
+				if (br == null) {
+					br = ErrorApiUtils.parseError(arg1, retrofit);
+				}
+
+				if (br.statusCode == 200) {
+					listener.OnResponseAccepted(arg1.body(), arg1.headers());
+				} else {
+					listener.OnResponseRefused(br, arg1.headers());
+				}
+			}
+
+			@Override
+			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+				BaseResponse br = new BaseResponse();
+				br.message = arg1.getMessage();
+				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+
+				listener.OnResponseRefused(br, null);
+			}
+		});
+	}
+	
+	public void updateClient(ClientDto request, IAbylsenApiListener listener) {
+		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
+
+		client.updateClient(request).enqueue(new Callback<BaseResponse>() {
+
+			@Override
+			public void onResponse(Call<BaseResponse> arg0, retrofit2.Response<BaseResponse> arg1) {
+				BaseResponse br = arg1.body();
+				if (br == null) {
+					br = ErrorApiUtils.parseError(arg1, retrofit);
+				}
+
+				if (br.statusCode == 200) {
+					listener.OnResponseAccepted(arg1.body(), arg1.headers());
+				} else {
+					listener.OnResponseRefused(br, arg1.headers());
+				}
+			}
+
+			@Override
+			public void onFailure(Call<BaseResponse> arg0, Throwable arg1) {
+				BaseResponse br = new BaseResponse();
+				br.message = arg1.getMessage();
+				br.statusCode = HttpStatus.STATUS_INTERNAL_SERVER_ERROR;
+
+				listener.OnResponseRefused(br, null);
+			}
+		});
+	}
+
 	
 	public void addEmployee(AddEmployeeRequest request, IAbylsenApiListener listener) {
 		IAbylsenApiRestClient client = retrofit.create(IAbylsenApiRestClient.class);
